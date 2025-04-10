@@ -1,66 +1,30 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Project Manager
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This personal side quest came out of the desire to see a project management web app that behaved the way I would like it to. With some feedback from my awesome team and their ideal project management app experience.
+The other inspiration came from listening to CGP Grey and Myke Hurley on the Cortex podcast talk about tasks being independent, composable pieces of state that are not tied to a specific project. I'm paraphrasing here, but that really stuck with me as a useful property of a task manager. Break the task up into as many pieces as you need and assign just those pieces to whoever. And they don't need to see or care about the surrounding context of tasks.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The data model is based off of an organization that all users are associated to. With one Super Admin. Users may then be admins of projects or associated with projects. And of course assigned tasks. Because duh.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Currently working features:
+ - Two main pages:
+  1. "Your Tasks" - shows just tasks you are assigned to across all projects/buckets/etc
+  2. "Project" - shows all tasks that happen to be associated with a project and/or bucket in a project
+ - Two different styles of displaying tasks within both of those kinds of pages:
+  1. Board view: think kanban/Trello/Planner, organized by bucket in a project
+  2. Grid view: table of tasks
+ - Task Composabililty
+  - Tasks can have an arbitrary number/level of subtasks that have their own assignments/due dates/priority or even bucket/project assignment
+  - Tasks/Subtasks can be assigned to any one in your organization and it will show either in their "Your Tasks" page or if you attach it to a project and/or bucket they have access to, it will show there
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Features I Want
 
-## Learning Laravel
+Still have features I want to get to:
+ - Attachments - Tasks/Subtasks should have attachments
+ - Comments - Tasks/Subtasks should have comments.
+ - Notifications - When a task is assigned to you, marked completed, or is commented on, you should get an email
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## WIP
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Still very much a work in progress, but I'm really happy with how far it's come. Close to deploying it on a Droplet (or maybe Laravel Cloud?) and giving a link to friends/co-workers to try out.
