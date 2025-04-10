@@ -3,7 +3,7 @@
 This personal side quest came out of the desire to see a project management web app that behaved the way I would like it to. With some feedback from my awesome team and their ideal project management app experience.
 The other inspiration came from listening to CGP Grey and Myke Hurley on the Cortex podcast talk about tasks being independent, composable pieces of state that are not tied to a specific project. I'm paraphrasing here, but that really stuck with me as a useful property of a task manager. Break the task up into as many pieces as you need and assign just those pieces to whoever. And they don't need to see or care about the surrounding context of tasks.
 
-## Features
+## Features It Has
 
 The data model is based off of an organization that all users are associated to. With one Super Admin. Users may then be admins of projects or associated with projects. And of course assigned tasks. Because duh.
 
