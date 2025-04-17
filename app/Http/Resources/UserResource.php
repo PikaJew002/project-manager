@@ -4,7 +4,6 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Str;
 
 class UserResource extends JsonResource
 {
@@ -17,12 +16,16 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'initials' => Str::initials($this->name),
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'name' => $this->first_name . ' ' . $this->last_name,
+            'initials' => $this->initials,
             'email' => $this->email,
             'is_admin' => $this->is_admin,
             'is_me' => $request->user()->id === $this->id,
+            'organization' => $this->organization,
             'projects' => ProjectResource::collection($this->whenLoaded('projects')),
+            'created_at' => $this->created_at,
         ];
     }
 }

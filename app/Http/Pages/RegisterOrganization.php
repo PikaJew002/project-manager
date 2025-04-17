@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Pages;
 
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ShowLogin
+class RegisterOrganization
 {
     public function __invoke(): Response
     {
-        return Inertia::render('Welcome');
+        return Inertia::render('RegisterOrganization');
     }
 }

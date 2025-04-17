@@ -18,13 +18,23 @@ class Organization extends Model
      */
     protected $guarded = [];
 
-    public function administeredBy(): ?User
+    public function administeredBy(): HasMany
     {
-        return $this->users()->firstWhere('is_admin', true);
+        return $this->hasMany(User::class)->where('is_admin', true);
     }
 
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    public function invites(): HasMany
+    {
+        return $this->hasMany(Invite::class);
+    }
+
+    public function invitesNotAccepted(): HasMany
+    {
+        return $this->hasMany(Invite::class)->whereNull('accepted_at');
     }
 }

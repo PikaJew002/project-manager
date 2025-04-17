@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('organization_id')->constrained();
             $table->boolean('is_admin')->default(false);
-            $table->string('name');
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('initials', 5);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

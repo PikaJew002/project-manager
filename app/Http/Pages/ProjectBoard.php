@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Pages;
 
 use App\Http\Resources\ProjectResource;
 use App\Models\Project;
@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ShowProjectBoard
+class ProjectBoard
 {
     public function __invoke(Request $request, int $id): Response
     {

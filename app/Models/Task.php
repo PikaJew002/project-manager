@@ -74,13 +74,13 @@ class Task extends Model
     public function tasks(): HasMany
     {
         return $this->hasMany(self::class)->with([
-            'tasks' => function () {},
             'projects' => function (BelongsToMany $query) {
                 $query->yourProjects(request()->user());
             },
             'buckets' => function (BelongsToMany $query) {
                 $query->yourBuckets(request()->user());
             },
+            'tasks' => function () {},
             'users' => function () {},
         ]);
     }
@@ -102,14 +102,16 @@ class Task extends Model
 
     public static function projectTasks(int $projectId, Collection $projectsIds): EloquentCollection
     {
-        return static::with(['createdBy', 'users'])->with([
-            'buckets' => function (BelongsToMany $query) use ($projectsIds) {
-                $query->whereIn('project_id', $projectsIds)->with('tasks');
-            },
+        return static::with([
             'projects' => function (BelongsToMany $query) use ($projectsIds) {
                 $projectsString = $projectsIds->join(',');
                 $query->whereRaw("`projects`.`id` in ({$projectsString})")->with('buckets.tasks');
             },
+            'buckets' => function (BelongsToMany $query) use ($projectsIds) {
+                $query->whereIn('project_id', $projectsIds)->with('tasks');
+            },
+            'tasks' => function () {},
+            'users' => function () {},
         ])->where(function (Builder $query) use ($projectId) {
             $query->whereRelation('projects', DB::raw('`projects`.`id`'), $projectId)->orWhereHas('buckets', function (Builder $query) use ($projectId) {
                 $query->where('project_id', $projectId);

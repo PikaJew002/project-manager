@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Pages;
 
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\TaskResource;
@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ShowDashboardBoard
+class DashboardBoard
 {
     public function __invoke(Request $request): Response
     {
@@ -62,11 +62,15 @@ class ShowDashboardBoard
                 $query->with('buckets')->whereRaw("`projects`.`id` in ({$projectsString})");
             },
             'tasks' => function () {},
-        ])->whereRelation('users', DB::raw('`users`.`id`'), $user->id)
-            ->whereDoesntHaveRelation('projects', function (Builder $query) use ($user) {
+        ])
+        ->whereRelation('users', DB::raw('`users`.`id`'), $user->id)
+        ->whereNot(function (Builder $query) use ($user) {
+            $query->whereHas('projects', function (Builder $query) use ($user) {
                 $query->yourProjects($user);
-            })->get();
-
+            })->orWhereHas('buckets', function (Builder $query) use ($user) {
+                $query->yourBuckets($user);
+            });
+        })->get();
 
         // grouped as: bucket, project
 

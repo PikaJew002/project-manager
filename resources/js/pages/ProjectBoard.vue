@@ -41,8 +41,6 @@ let addBucketButton = useTemplateRef('add-bucket-button');
 
 let newBucketName = ref('');
 
-let groupBy = ref('bucket');
-
 onClickOutside(newBucketInput, () => addBucketMode.value = false);
 
 let form = useForm({
@@ -116,17 +114,22 @@ function onUpdatedTasks(results) {
 }
 
 function onEditParentTask(taskId) {
-  let foundTask = pagesStore.findTaskInProject(taskId);
+  let foundTask = pagesStore.findTaskInProjectBoard(taskId);
   if (foundTask) {
-    taskModalStore.setTask(foundTask);
+    let foundParent = pagesStore.findTaskInDashboardBoard(foundTask.task_id);
+    if (foundParent) {
+      taskModalStore.setTask(foundTask, true);
+    } else {
+      taskModalStore.setTask(foundTask, false);
+    }
   }
 }
 </script>
 
 <template>
   <Head title="Project Manager" />
-  <AppLayout>
-    <div class="sm:flex sm:items-center px-4 sm:px-6 lg:px-8">
+  <AppLayout :pageRoute="route().current()" :paramId="route().params.id">
+    <div class="sm:flex sm:items-center pt-10 px-4 sm:px-6 lg:px-8">
       <div class="sm:grow sm:shrink">
         <h1 class="text-base font-semibold text-gray-900">{{ project.name }}</h1>
         <p class="mt-2 text-sm text-gray-700">A list of this projects tasks</p>
@@ -152,53 +155,48 @@ function onEditParentTask(taskId) {
       </div>
     </div>
     <BoardDashboard>
-      <template v-if="groupBy === 'bucket'">
-        <Bucket
-          title="No Bucket"
-          :tasks="pagesStore.project.tasks"
-          @click-add-task="openCreateTaskModal()"
-          :show-three-dots="false"
-          v-slot="{ tasks }"
-        >
-          <TaskCard
-            v-for="task in tasks"
-            :key="task.id"
-            :task="task"
-            @edit-task="openEditTaskModal"
-            @update-task-status="updateTaskStatus"
-          />
-        </Bucket>
-        <Bucket
-          v-for="bucket in pagesStore.project.buckets"
-          :key="bucket.id"
-          :title="bucket.name"
-          :id="bucket.id"
-          :tasks="bucket.tasks"
-          @click-add-task="openCreateTaskModal"
-          v-slot="{ tasks }"
-        >
-          <TaskCard
-            v-for="task in tasks"
-            :key="task.id"
-            :task="task"
-            @edit-task="openEditTaskModal"
-            @update-task-status="updateTaskStatus"
-          />
-        </Bucket>
-        <BucketWrapper>
-          <div class="px-3 font-semibold leading-8 min-h-0 min-w-0">
-            <button ref="add-bucket-button" v-if="!addBucketMode" @click="onClickNewBucket" type="button" class="flex flex-row flex-nowrap flex-auto basis-0 my-0 mx-1">
-              Add a new bucket
-            </button>
-            <form v-else autocomplete="off" @submit.prevent="onNewBucketSubmit" @keydown.esc="handleEscape">
-              <input v-model="newBucketName" ref="new-bucket-input" type="text" placeholder="Bucket name" maxlength="256" aria-label="Add a new bucket" class="block rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
-            </form>
-          </div>
-        </BucketWrapper>
-      </template>
-      <template v-else-if="groupBy === 'assigned_to'">
-        <!-- TODO: figure out how to regroup tasks without having to remake the component -->
-      </template>
+      <Bucket
+        title="No Bucket"
+        :tasks="pagesStore.project.tasks"
+        @click-add-task="openCreateTaskModal"
+        :show-three-dots="false"
+        v-slot="{ tasks }"
+      >
+        <TaskCard
+          v-for="task in tasks"
+          :key="task.id"
+          :task="task"
+          @edit-task="openEditTaskModal"
+          @update-task-status="updateTaskStatus"
+        />
+      </Bucket>
+      <Bucket
+        v-for="bucket in pagesStore.project.buckets"
+        :key="bucket.id"
+        :title="bucket.name"
+        :id="bucket.id"
+        :tasks="bucket.tasks"
+        @click-add-task="openCreateTaskModal"
+        v-slot="{ tasks }"
+      >
+        <TaskCard
+          v-for="task in tasks"
+          :key="task.id"
+          :task="task"
+          @edit-task="openEditTaskModal"
+          @update-task-status="updateTaskStatus"
+        />
+      </Bucket>
+      <BucketWrapper>
+        <div class="px-3 font-semibold leading-8 min-h-0 min-w-0">
+          <button ref="add-bucket-button" v-if="!addBucketMode" @click="onClickNewBucket" type="button" class="flex flex-row flex-nowrap flex-auto basis-0 my-0 mx-1">
+            Add a new bucket
+          </button>
+          <form v-else autocomplete="off" @submit.prevent="onNewBucketSubmit" @keydown.esc="handleEscape">
+            <input v-model="newBucketName" ref="new-bucket-input" type="text" placeholder="Bucket name" maxlength="256" aria-label="Add a new bucket" class="block rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+          </form>
+        </div>
+      </BucketWrapper>
     </BoardDashboard>
     <TaskModal :page="currentURL" @updated-tasks="onUpdatedTasks" @load-task="onEditParentTask" />
   </AppLayout>

@@ -35,11 +35,11 @@ const sizeMap = {
       v-for="item in items"
       type="button"
       :key="item[keyAttribute]"
-      class="shrink-0 rounded-full hover:opacity-75"
+      class="group shrink-0 rounded-full"
       :title="item[titleAttribute]"
     >
       <div class="inline-block relative text-center">
-        <div :class="['rounded-full bg-gray-200 font-semibold', sizeMap[size]]">
+        <div :class="['rounded-full bg-indigo-500 text-white font-semibold group-hover:bg-indigo-600', sizeMap[size]]">
           <span>{{ item[initialsAttribute] }}</span>
         </div>
       </div>

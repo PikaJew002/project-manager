@@ -1,6 +1,7 @@
 <script setup>
-import { computed, ref } from 'vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { computed, ref, useTemplateRef, nextTick } from 'vue';
+import { Link, usePage, useForm } from '@inertiajs/vue3';
+import { onClickOutside } from '@vueuse/core';
 import {
   Dialog,
   DialogPanel,
@@ -22,18 +23,100 @@ import {
   XMarkIcon,
 } from '@heroicons/vue/24/outline';
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid';
+import { useTaskModalStore } from '../stores/task-modal.js';
+import Banner from '../components/dashboard/Banner.vue';
+
+let props = defineProps({
+  pageRoute: {
+    type: String,
+    required: true,
+  },
+  paramId: {
+    type: String,
+  },
+});
+
+let showStatus = ref(true);
+
+let isProjectPage = computed(() => {
+  return props.pageRoute.startsWith('project');
+});
+
+const currentURL = route(props.pageRoute, route().params);
 
 let page = usePage();
 
+let taskModalStore = useTaskModalStore();
+
 let auth = computed(() => page.props.auth);
 
-const navigation = [
-  { name: 'Your Tasks', href: route('dashboard-grid'), icon: HomeIcon, current: true },
-  { name: 'Organization', href: '#', icon: UsersIcon, current: false },
-  { name: 'Projects', href: '#', icon: FolderIcon, current: false },
+const nav = [
+  { name: 'Your Tasks', href: route('dashboard-grid'), icon: HomeIcon, route: ['dashboard-grid', 'dashboard-board'] },
+  { name: 'Organization', href: route('organization'), icon: UsersIcon, route: ['organization'] },
+  { name: 'Projects', href: '#', icon: FolderIcon, route: [] },
 ];
 
-const sidebarOpen = ref(false);
+let navigation = computed(() => {
+  if (auth.value?.user.is_admin) {
+    return nav;
+  }
+
+  return nav.filter((item) => item.name !== 'Organization');
+});
+
+let sidebarOpen = ref(false);
+
+let addProjectMode = ref(false);
+let newProjectForm = useTemplateRef('new-project-form');
+let newProjectNameInput = useTemplateRef('new-project-name-input');
+let addProjectButton = useTemplateRef('add-project-button');
+
+let newProjectName = ref('');
+let newProjectInitials = ref('');
+
+onClickOutside(newProjectForm, () => addProjectMode.value = false);
+
+let form = useForm({
+  name: '',
+  initials: '',
+});
+
+function onClickNewProject() {
+  addProjectMode.value = true;
+  nextTick(() => {
+    newProjectNameInput.value.focus();
+  });
+}
+
+function onNewProjectSubmit() {
+  form.name = newProjectName.value;
+  form.initials = newProjectInitials.value;
+  form.post(route('create-project'), {
+    headers: {
+      'X-From': currentURL,
+    },
+    preserveState: true,
+    preserveScroll: true,
+    onSuccess: (results) => {
+      taskModalStore.setProjects(results.props.task_options?.your_projects);
+      addProjectMode.value = false;
+      form.reset();
+    },
+    onError: (err) => {
+      console.log(err);
+      addProjectMode.value = false;
+      form.reset();
+      console.log('submitted error');
+    },
+  });
+}
+
+function handleEscape() {
+  addProjectMode.value = false;
+  nextTick(() => {
+    addProjectButton.value.focus();
+  });
+}
 </script>
 
 <template>
@@ -97,7 +180,7 @@ const sidebarOpen = ref(false);
                 <span
                   class="ml-4 text-sm/6 font-semibold text-gray-900"
                   aria-hidden="true"
-                  >{{ auth.user?.name }}</span
+                  >{{ auth.user?.first_name }} {{ auth.user?.last_name }}</span
                 >
                 <ChevronDownIcon
                   class="ml-2 size-5 text-gray-400"
@@ -211,7 +294,7 @@ const sidebarOpen = ref(false);
                           <Link
                             :href="item.href"
                             :class="[
-                              item.current
+                              item.route.includes(pageRoute)
                                 ? 'bg-gray-50 text-indigo-600'
                                 : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',
                               'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
@@ -220,7 +303,7 @@ const sidebarOpen = ref(false);
                             <component
                               :is="item.icon"
                               :class="[
-                                item.current
+                                item.route.includes(pageRoute)
                                   ? 'text-indigo-600'
                                   : 'text-gray-400 group-hover:text-indigo-600',
                                 'size-6 shrink-0',
@@ -241,7 +324,7 @@ const sidebarOpen = ref(false);
                           v-for="project in page.props.nav_projects"
                           :key="project.id"
                           :class="[
-                            project.current
+                            isProjectPage && paramId == project.id
                               ? 'bg-gray-50 text-indigo-600'
                               : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',
                             'group rounded-md text-sm/6 font-semibold',
@@ -251,7 +334,7 @@ const sidebarOpen = ref(false);
                             <div class="flex flex-row flex-nowrap shrink grow basis-auto items-center h-9">
                               <div class="flex flex-row flex-nowrap shrink-0 grow-0 basis-7 justify-center items-center w-7 h-7 ml-2 pt-px">
                                 <span :class="[
-                                  project.current
+                                  isProjectPage && paramId == project.id
                                     ? 'border-indigo-600 text-indigo-600'
                                     : 'border-gray-200 text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600',
                                   'flex size-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium',
@@ -288,11 +371,84 @@ const sidebarOpen = ref(false);
                             </div>
                           </Link>
                         </li>
-                        <li :class="['hover:bg-gray-50 hover:text-indigo-600',
-                            'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',
-                            'group rounded-md text-sm/6 font-semibold',
-                          ]">
+                        <li ref="new-project-form-mobile" class="group rounded-md text-sm/6 font-semibold text-indigo-600">
+                          <button
+                            ref="add-project-button-mobile"
+                            @click="onClickNewProject"
+                            type="button"
+                            :class="[
+                              'flex opacity-0 group-hover:opacity-100 min-h-px max-h-9 w-5 my-0 ml-3 mr-1 align-middle shrink-0 items-center justify-center',
 
+                            ]"
+                            v-if="!addProjectMode"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                          </button>
+                          <form v-else autocomplete="off" @submit.prevent="onNewProjectSubmit" @keydown.esc="handleEscape">
+                            <input v-model="newProjectName" ref="new-project-name-input-mobile" type="text" placeholder="Project name" maxlength="256" aria-label="Add a project name" class="block rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                            <input v-model="newProjectInitials" type="text" placeholder="Project initials" maxlength="5" aria-label="Add a project initials" class="block rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                            <button type="submit" class="hidden"></button>
+                          </form>
+                        </li>
+                      </ul>
+                    </li>
+                    <li v-if="page.props.admin_nav_projects.length > 0">
+                      <div class="text-xs/6 font-semibold text-gray-400">
+                        Other Projects
+                      </div>
+                      <ul role="list" class="-mx-2 mt-2 space-y-1">
+                        <li
+                          v-for="project in page.props.admin_nav_projects"
+                          :key="project.id"
+                          :class="[
+                            isProjectPage && paramId == project.id
+                              ? 'bg-gray-50 text-indigo-600'
+                              : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',
+                            'group rounded-md text-sm/6 font-semibold',
+                          ]"
+                        >
+                          <Link :href="route('project-board', project.id)" class="group flex flex-row flex-nowrap shrink grow basis-auto">
+                            <div class="flex flex-row flex-nowrap shrink grow basis-auto items-center h-9">
+                              <div class="flex flex-row flex-nowrap shrink-0 grow-0 basis-7 justify-center items-center w-7 h-7 ml-2 pt-px">
+                                <span :class="[
+                                  isProjectPage && paramId == project.id
+                                    ? 'border-indigo-600 text-indigo-600'
+                                    : 'border-gray-200 text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600',
+                                  'flex size-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium',
+                                ]">
+                                  {{ project.initials }}
+                                </span>
+                              </div>
+                              <div class="flex flex-row flex-nowrap shrink grow basis-auto ml-2">
+                                <span class="truncate">
+                                  {{ project.name }}
+                                </span>
+                              </div>
+                              <Menu as="div" class="flex mx-2 opacity-0 group-hover:opacity-100">
+                                <Float placement="bottom-start">
+                                  <div>
+                                    <MenuButton @click.prevent class="block size-5 rounded-md text-sm font-semibold text-gray-900">
+                                      <svg class="inline" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M6.25 10a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0Zm5 0a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0ZM15 11.25a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Z" fill="currentColor"></path></svg>
+                                    </MenuButton>
+                                  </div>
+                                  <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
+                                    <MenuItems class="w-56 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                                      <div class="py-1">
+                                        <MenuItem v-slot="{ active }">
+                                          <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">Rename</a>
+                                        </MenuItem>
+                                        <MenuItem v-slot="{ active }">
+                                          <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">Delete</a>
+                                        </MenuItem>
+                                      </div>
+                                    </MenuItems>
+                                  </transition>
+                                </Float>
+                              </Menu>
+                            </div>
+                          </Link>
                         </li>
                       </ul>
                     </li>
@@ -341,7 +497,7 @@ const sidebarOpen = ref(false);
                     <Link
                       :href="item.href"
                       :class="[
-                        item.current
+                        item.route.includes(pageRoute)
                           ? 'bg-gray-50 text-indigo-600'
                           : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',
                         'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
@@ -350,7 +506,7 @@ const sidebarOpen = ref(false);
                       <component
                         :is="item.icon"
                         :class="[
-                          item.current
+                          item.route.includes(pageRoute)
                             ? 'text-indigo-600'
                             : 'text-gray-400 group-hover:text-indigo-600',
                           'size-6 shrink-0',
@@ -358,7 +514,7 @@ const sidebarOpen = ref(false);
                         aria-hidden="true"
                       />
                       {{ item.name }}
-                  </Link>
+                    </Link>
                   </li>
                 </ul>
               </li>
@@ -371,7 +527,7 @@ const sidebarOpen = ref(false);
                     v-for="project in page.props.nav_projects"
                     :key="project.id"
                     :class="[
-                      project.current
+                      isProjectPage && paramId == project.id
                         ? 'bg-gray-50 text-indigo-600'
                         : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',
                       'group rounded-md text-sm/6 font-semibold',
@@ -381,7 +537,7 @@ const sidebarOpen = ref(false);
                       <div class="flex flex-row flex-nowrap shrink grow basis-auto items-center h-9">
                         <div class="flex flex-row flex-nowrap shrink-0 grow-0 basis-7 justify-center items-center w-7 h-7 ml-2 pt-px">
                           <span :class="[
-                            project.current
+                            isProjectPage && paramId == project.id
                               ? 'border-indigo-600 text-indigo-600'
                               : 'border-gray-200 text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600',
                             'flex size-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium',
@@ -418,8 +574,84 @@ const sidebarOpen = ref(false);
                       </div>
                     </Link>
                   </li>
-                  <li class="group rounded-md text-sm/6 font-semibold text-gray-700 hover:bg-gray-50 hover:text-indigo-600">
+                  <li ref="new-project-form" class="group rounded-md text-sm/6 font-semibold text-indigo-600">
+                    <button
+                      ref="add-project-button"
+                      @click="onClickNewProject"
+                      type="button"
+                      :class="[
+                        'flex opacity-0 group-hover:opacity-100 min-h-px max-h-9 w-5 my-0 ml-3 mr-1 align-middle shrink-0 items-center justify-center',
 
+                      ]"
+                      v-if="!addProjectMode"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                      </svg>
+                    </button>
+                    <form v-else autocomplete="off" @submit.prevent="onNewProjectSubmit" @keydown.esc="handleEscape">
+                      <input v-model="newProjectName" ref="new-project-name-input" type="text" placeholder="Project name" maxlength="256" aria-label="Add a project name" class="block rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                      <input v-model="newProjectInitials" type="text" placeholder="Project initials" maxlength="5" aria-label="Add a project initials" class="block rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                      <button type="submit" class="hidden"></button>
+                    </form>
+                  </li>
+                </ul>
+              </li>
+              <li v-if="page.props.admin_nav_projects.length > 0">
+                <div class="text-xs/6 font-semibold text-gray-400">
+                  Other Projects
+                </div>
+                <ul role="list" class="-mx-2 mt-2 space-y-1">
+                  <li
+                    v-for="project in page.props.admin_nav_projects"
+                    :key="project.id"
+                    :class="[
+                      isProjectPage && paramId == project.id
+                        ? 'bg-gray-50 text-indigo-600'
+                        : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',
+                      'group rounded-md text-sm/6 font-semibold',
+                    ]"
+                  >
+                    <Link :href="route('project-board', project.id)" class="group flex flex-row flex-nowrap shrink grow basis-auto">
+                      <div class="flex flex-row flex-nowrap shrink grow basis-auto items-center h-9">
+                        <div class="flex flex-row flex-nowrap shrink-0 grow-0 basis-7 justify-center items-center w-7 h-7 ml-2 pt-px">
+                          <span :class="[
+                            isProjectPage && paramId == project.id
+                              ? 'border-indigo-600 text-indigo-600'
+                              : 'border-gray-200 text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600',
+                            'flex size-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium',
+                          ]">
+                            {{ project.initials }}
+                          </span>
+                        </div>
+                        <div class="flex flex-row flex-nowrap shrink grow basis-auto ml-2">
+                          <span class="truncate">
+                            {{ project.name }}
+                          </span>
+                        </div>
+                        <Menu as="div" class="flex mx-2 opacity-0 group-hover:opacity-100">
+                          <Float placement="bottom-start">
+                            <div>
+                              <MenuButton @click.prevent class="block size-5 rounded-md text-sm font-semibold text-gray-900">
+                                <svg class="inline" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M6.25 10a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0Zm5 0a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0ZM15 11.25a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Z" fill="currentColor"></path></svg>
+                              </MenuButton>
+                            </div>
+                            <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
+                              <MenuItems class="w-56 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                                <div class="py-1">
+                                  <MenuItem v-slot="{ active }">
+                                    <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">Rename</a>
+                                  </MenuItem>
+                                  <MenuItem v-slot="{ active }">
+                                    <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">Delete</a>
+                                  </MenuItem>
+                                </div>
+                              </MenuItems>
+                            </transition>
+                          </Float>
+                        </Menu>
+                      </div>
+                    </Link>
                   </li>
                 </ul>
               </li>
@@ -440,8 +672,11 @@ const sidebarOpen = ref(false);
         </div>
       </div>
       <main class="w-full float-none overflow-hidden relative">
-        <div class="flex flex-col flex-nowrap grow shrink basis-0 overflow-y-auto h-full min-h-0 min-w-0 relative pt-10 z-0 bg-cover bg-[linear-gradient(rgb(255,255,255)_0%,rgba(255,255,255,0.2)_50%),url(https://cdn.hubblecontent.osi.office.net/getty/publish/gettyimages/849074186_t10_template_13.jpg)]">
+        <div class="flex flex-col flex-nowrap grow shrink basis-0 overflow-y-auto h-full min-h-0 min-w-0 relative z-0 bg-cover bg-[linear-gradient(rgb(255,255,255)_0%,rgba(255,255,255,0.2)_50%),url(https://cdn.hubblecontent.osi.office.net/getty/publish/gettyimages/849074186_t10_template_13.jpg)]">
           <div class="flex grow shrink basis-0 flex-col flex-nowrap min-w-0 min-h-0">
+            <Banner :show="page.props.status !== undefined && showStatus" @close="showStatus = false">
+              {{ page.props.status }}
+            </Banner>
             <slot />
           </div>
         </div>

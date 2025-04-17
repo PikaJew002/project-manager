@@ -38,22 +38,25 @@ export const usePagesStore = defineStore('pages-store', () => {
   }
 
   function addProjectBucket(bucket) {
-    project.buckets.push({...bucket, tasks: []});
+    project.buckets.push({ ...bucket, tasks: [] });
   }
 
   function addProjectTask(task) {
-    project.tasks.push({...task});
+    project.tasks.push({ ...task });
   }
 
   function addBucketTask(task) {
-    let bucketIndex = project.buckets.findIndex(b => b.id === task.buckets.find(tb => tb.project_id === project.id)?.id);
-    project.buckets[bucketIndex].tasks.push({...task});
+    let bucketIndex = project.buckets.findIndex(
+      (b) =>
+        b.id === task.buckets.find((tb) => tb.project_id === project.id)?.id
+    );
+    project.buckets[bucketIndex].tasks.push({ ...task });
   }
 
   function deleteProjectTask(taskId) {
-    project.tasks = project.tasks.filter(t => t.id !== taskId);
-    project.buckets.map(b => {
-      b.tasks = b.tasks.filter(t => t.id !== taskId);
+    project.tasks = project.tasks.filter((t) => t.id !== taskId);
+    project.buckets.map((b) => {
+      b.tasks = b.tasks.filter((t) => t.id !== taskId);
       return b;
     });
   }
@@ -61,8 +64,8 @@ export const usePagesStore = defineStore('pages-store', () => {
   function updateProjectTask(task, bucketIds, projectIds) {
     let oldBucketIds = new Set(bucketIds);
     let oldProjectIds = new Set(projectIds);
-    let newBucketIds = new Set(task.buckets.map(b => b.id));
-    let newProjectIds = new Set(task.projects.map(p => p.id));
+    let newBucketIds = new Set(task.buckets.map((b) => b.id));
+    let newProjectIds = new Set(task.projects.map((p) => p.id));
 
     let bucketsToRemove = oldBucketIds.difference(newBucketIds);
     let bucketsToAdd = newBucketIds.difference(oldBucketIds);
@@ -70,18 +73,20 @@ export const usePagesStore = defineStore('pages-store', () => {
     let projectsToRemove = oldProjectIds.difference(newProjectIds);
     let projectsToAdd = newProjectIds.difference(oldBucketIds);
 
-    bucketsToRemove.forEach(bucketId => {
-      let bucketIndex = project.buckets.findIndex(b => b.id === bucketId);
+    bucketsToRemove.forEach((bucketId) => {
+      let bucketIndex = project.buckets.findIndex((b) => b.id === bucketId);
 
       if (bucketIndex > -1) {
-        project.buckets[bucketIndex].tasks = project.buckets[bucketIndex].tasks.filter(t => t.id !== task.id);
+        project.buckets[bucketIndex].tasks = project.buckets[
+          bucketIndex
+        ].tasks.filter((t) => t.id !== task.id);
       } else {
         // removed from a bucket in another project. Maybe show a toast message or something?
       }
     });
 
-    bucketsToAdd.forEach(bucketId => {
-      let bucketIndex = project.buckets.findIndex(b => b.id === bucketId);
+    bucketsToAdd.forEach((bucketId) => {
+      let bucketIndex = project.buckets.findIndex((b) => b.id === bucketId);
 
       if (bucketIndex > -1) {
         project.buckets[bucketIndex].tasks.push(task);
@@ -90,15 +95,15 @@ export const usePagesStore = defineStore('pages-store', () => {
       }
     });
 
-    projectsToRemove.forEach(projectId => {
+    projectsToRemove.forEach((projectId) => {
       if (projectId === project.id) {
-        project.tasks = project.tasks.filter(t => t.id !== task.id);
+        project.tasks = project.tasks.filter((t) => t.id !== task.id);
       } else {
         // removed from another project's tasks (no bucket). Maybe show a toast message or something?
       }
     });
 
-    projectsToAdd.forEach(projectId => {
+    projectsToAdd.forEach((projectId) => {
       if (projectId === project.id) {
         project.tasks.push(task);
       } else {
@@ -133,7 +138,7 @@ export const usePagesStore = defineStore('pages-store', () => {
     );
   }
 
-  function findTaskInProject(taskId) {
+  function findTaskInProjectBoard(taskId) {
     for (const i of project.tasks) {
       let foundTask = findTask(i, taskId);
       if (foundTask) {
@@ -151,7 +156,7 @@ export const usePagesStore = defineStore('pages-store', () => {
     return undefined;
   }
 
-  function findTaskInYourTasks(taskId) {
+  function findTaskInDashboardBoard(taskId) {
     for (const i of project_tasks.value) {
       let foundTask = findTask(i, taskId);
       if (foundTask) {
@@ -177,6 +182,26 @@ export const usePagesStore = defineStore('pages-store', () => {
     return undefined;
   }
 
+  function findTaskInGrid(taskId) {
+    for (const i of tasks.value) {
+      let foundTask = findTask(i, taskId);
+      if (foundTask) {
+        return foundTask;
+      }
+    }
+    return undefined;
+  }
+
+  function findTaskInGrid(taskId) {
+    for (const i of tasks.value) {
+      let foundTask = findTask(i, taskId);
+      if (foundTask) {
+        return foundTask;
+      }
+    }
+    return undefined;
+  }
+
   function findTask(task, taskId) {
     if (task.id === taskId) {
       return task;
@@ -193,7 +218,7 @@ export const usePagesStore = defineStore('pages-store', () => {
   }
 
   function getTask(task_id) {
-    return tasks.value.find(t => t.id === task_id);
+    return tasks.value.find((t) => t.id === task_id);
   }
 
   return {
@@ -215,7 +240,8 @@ export const usePagesStore = defineStore('pages-store', () => {
     deleteTask,
     getBucketTasks,
     getTask,
-    findTaskInProject,
-    findTaskInYourTasks,
+    findTaskInProjectBoard,
+    findTaskInDashboardBoard,
+    findTaskInGrid,
   };
 });

@@ -8,6 +8,15 @@ The other inspiration came from listening to CGP Grey and Myke Hurley on the Cor
 The data model is based off of an organization that all users are associated to. With one Super Admin. Users may then be admins of projects or associated with projects. And of course assigned tasks. Because duh.
 
 Currently working features:
+ - User Registration
+  1. Organization creation flow
+   - Create Organization with User as Super Admin
+   - Create Private Tasks Project for User 
+  2. Organization invite flow
+   - Allow Super Admin to put an email in which sends a link to the email to register
+   - When User is created, they get added to the Organization
+   - Create Private Tasks Project for User
+ - Create new Projects
  - Two main pages:
   1. "Your Tasks" - shows just tasks you are assigned to across all projects/buckets/etc
   2. "Project" - shows all tasks that happen to be associated with a project and/or bucket in a project
@@ -21,21 +30,12 @@ Currently working features:
 ## Features I Need
 
 I have some essential features I need to implement before it's usable (without stubbing data):
- - User Registration
-  1. Organization creation flow
-   - Create Organization with User as Super Admin
-   - Create Private Tasks Bucket for User 
-  2. Organization invite flow
-   - Allow Super Admin to put an email in which sends a link to the email to register
-   - When User is created, they get added to the Organization
-   - Create Private Tasks Bucket for User
  - Organization Resource
   1. Allow adding/removing more Users as Super Admins (provided there's always one)
  - Project Resource
-  1. Create new Projects
-  2. Rename/Delete existing Projects
-  3. Add/Remove Users from Projects
-  4. Transfer Project administration
+  1. Rename/Delete existing Projects
+  2. Add/Remove Users from Projects
+  3. Transfer Project administration
  - Bucket Resource
   1. Rename/Delete Buckets from Projects
   2. Order Buckets

@@ -29,7 +29,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'organization_id',
-        'name',
+        'first_name',
+        'last_name',
+        'initials',
+        'is_admin',
         'email',
         'password',
     ];
@@ -61,6 +64,11 @@ class User extends Authenticatable
     public function organization(): BelongsTo
     {
         return $this->belongsTo(Organization::class);
+    }
+
+    public function invites(): HasMany
+    {
+        return $this->hasMany(Invite::class, 'invited_by');
     }
 
     public function projects(): BelongsToMany
