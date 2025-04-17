@@ -20,10 +20,7 @@ class Organization
             return response()->redirectToRoute('dashboard-grid');
         }
 
-        $organization = OrganizationModel::with([
-            'users',
-            'invitesNotAccepted',
-        ])->findOrFail($request->user()->organization_id);
+        $organization = OrganizationModel::with(['users', 'invitesNotDeclined'])->findOrFail($request->user()->organization_id);
 
         return Inertia::render('Organization', [
             'organization' => new OrganizationResource($organization),

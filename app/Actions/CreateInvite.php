@@ -15,7 +15,7 @@ class CreateInvite
     public function __invoke(Request $request): RedirectResponse
     {
         $request->validate([
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class,'unique:' . Invite::class],
         ]);
 
         $invite = Invite::create([

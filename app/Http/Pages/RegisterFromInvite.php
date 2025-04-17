@@ -3,18 +3,29 @@
 namespace App\Http\Pages;
 
 use App\Models\Invite;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class RegisterFromInvite
 {
-    public function __invoke(Request $request, string $token)
+    public function __invoke(string $token): RedirectResponse|Response
     {
-        $invite = Invite::with(['organization', 'invitedBy'])->where('token', $token)->firstOrFail();
+        if (Auth::check()) {
+            session()->flash('inertia', ['status' => '']);
+        }
+
+        $invite = Invite::with(['organization', 'invitedBy'])->where('token', $token)->first();
+
+        if ($invite === null) {
+            session()->flash('inertia', ['status' => "The invite link you are trying to access has been declined and deleted after a week."]);
+
+            return response()->redirectToRoute('welcome');
+        }
 
         return Inertia::render('RegisterFromInvite', [
-            'accepted_at' => $invite->accepted_at,
             'declined_at' => $invite->declined_at,
             'invited_by' => $invite->invitedBy->first_name . ' ' . $invite->invitedBy->last_name,
             'invited_to' => $invite->organization->name,

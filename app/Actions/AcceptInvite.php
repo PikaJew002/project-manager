@@ -51,6 +51,8 @@ class AcceptInvite
             'is_personal' => true,
         ]);
 
+        $invite->delete();
+
         Auth::login($user);
 
         session()->flash('inertia', ['status' => "Invitation Accepted! Welcome aboard, {$fields['first_name']}!"]);

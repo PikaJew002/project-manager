@@ -2,12 +2,6 @@
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import AuthLayout from '../layouts/AuthLayout.vue';
 
-let props = defineProps({
-  status: {
-    type: String,
-  },
-});
-
 let form = useForm({
   email: '',
   password: '',
@@ -24,13 +18,6 @@ function submit() {
 <template>
   <Head title="Login" />
   <AuthLayout>
-    <div
-      v-if="status"
-      class="mb-4 text-center text-sm font-medium text-green-600"
-    >
-      {{ status }}
-    </div>
-
     <form @submit.prevent="submit" class="flex flex-col gap-6">
       <div class="grid gap-6">
         <div class="grid gap-2">
@@ -43,7 +30,7 @@ function submit() {
           <input
             id="email"
             type="email"
-            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-indigo-600 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
             required
             autofocus
             autocomplete="email"
@@ -67,7 +54,7 @@ function submit() {
           <input
             id="password"
             type="password"
-            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-indigo-600 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
             required
             autocomplete="current-password"
             v-model="form.password"
@@ -83,7 +70,7 @@ function submit() {
         <button
           type="submit"
           :disabled="form.processing"
-          class="mt-4 w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium border ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
+          class="mt-4 w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium border ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-indigo-600 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
         >
           <svg
             v-if="form.processing"
