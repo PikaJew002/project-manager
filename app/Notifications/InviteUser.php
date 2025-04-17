@@ -37,6 +37,7 @@ class InviteUser extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
+                    ->subject("You've been invited to a Project Manager Organization {$this->invite->organization->name}")
                     ->line("You've been invited to {$this->invite->organization->name} by {$this->invite->invitedBy->first_name} {$this->invite->invitedBy->last_name}!")
                     ->action('Respond To Invite', route('register-invite', $this->invite->token))
                     ->line("P.S.: If you don't respond to an invite (accept or decline), you can't be invited to another organization in Project Manager.");
