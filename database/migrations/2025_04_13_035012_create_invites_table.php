@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('invited_by')->constrained('users', 'id');
             $table->string('email')->unique();
             $table->string('token', 16)->unique();
-            $table->timestamp('accepted_at')->nullable();
             $table->timestamp('declined_at')->nullable();
             $table->timestamps();
         });

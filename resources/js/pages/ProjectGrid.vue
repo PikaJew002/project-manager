@@ -89,14 +89,14 @@ function onEditParentTask(taskId) {
     <div class="sm:flex sm:items-center pt-10 px-4 sm:px-6 lg:px-8">
       <div class="sm:grow sm:shrink">
         <h1 class="text-base font-semibold text-gray-900">{{ project.name }}</h1>
-        <p class="mt-2 text-sm text-gray-700">A list of this projects tasks</p>
+        <p class="mt-2 text-sm text-gray-700">A list of this project's tasks</p>
       </div>
       <div class="flex flex-col gap-y-8 sm:flex-row">
         <div class="flex gap-8 order-last sm:order-first">
           <span class="border-b-2 border-b-indigo-600 pb-2">
             <span class="text-indigo-600"><GridIcon :filled="true" /></span> <span class="font-medium">Grid</span>
           </span>
-          <Link :href="route('project-board', id)" class="pb-[calc(0.5rem+2px)]">
+          <Link :href="route('project-board', id)" class="pb-[calc(0.5rem+2px)] focus-visible:outline-none">
             <span class="text-black"><BoardIcon :filled="false" /></span> <span class="font-normal">Board</span>
           </Link>
         </div>

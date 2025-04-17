@@ -726,7 +726,7 @@ function onBackToParentTask() {
                                   <tr>
                                     <td :colspan="addTaskMode ? '1' : '4'" class=" whitespace-nowrap py-4 text-sm font-medium text-gray-900 flex items-center justify-center">
                                       <div>
-                                        <button ref="add-task-button" @click="onClickNewTask" type="button" class="flex min-h-px max-h-9 w-5 my-0 mx-1 align-middle shrink-0 items-center justify-center text-indigo-600">
+                                        <button ref="add-task-button" @click="onClickNewTask" :disabled="id === null" :title="id === null ? 'Save the task before creating subtasks' : 'New subtask'" type="button" class="flex min-h-px max-h-9 w-5 my-0 mx-1 align-middle shrink-0 items-center justify-center text-indigo-600">
                                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                           </svg>

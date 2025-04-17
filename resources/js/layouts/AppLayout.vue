@@ -215,7 +215,7 @@ function handleEscape() {
                       as="button"
                       :class="[
                         active ? 'bg-gray-50 outline-none' : '',
-                        'block px-3 py-1 text-sm/6 text-gray-900',
+                        'block w-full text-left px-3 py-1 text-sm/6 text-gray-900',
                       ]"
                       >Logout</Link
                     >

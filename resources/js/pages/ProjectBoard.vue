@@ -132,7 +132,7 @@ function onEditParentTask(taskId) {
     <div class="sm:flex sm:items-center pt-10 px-4 sm:px-6 lg:px-8">
       <div class="sm:grow sm:shrink">
         <h1 class="text-base font-semibold text-gray-900">{{ project.name }}</h1>
-        <p class="mt-2 text-sm text-gray-700">A list of this projects tasks</p>
+        <p class="mt-2 text-sm text-gray-700">A list of this project's tasks</p>
       </div>
       <div class="flex flex-col gap-y-8 sm:flex-row">
         <div class="flex gap-8 order-last sm:order-first">

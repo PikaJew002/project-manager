@@ -60,4 +60,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/project', CreateProject::class)->name('create-project');
 
     Route::post('/invite', CreateInvite::class)->name('create-invite');
+
+    Route::redirect('/dashboard', '/dashboard/grid');
 });
