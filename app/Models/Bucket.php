@@ -40,16 +40,18 @@ class Bucket extends Model
     {
         $query->when($user->is_admin, function (Builder $query) use ($user) {
             $query->whereHas('project', function (Builder $query) use ($user) {
-                $query->whereRelation('organization', 'id', $user->organization_id)->where(function (Builder $query) use ($user) {
-                    $query->where('is_personal', false)->orWhere('administered_by', $user->id);
-                });
+                $query->whereRelation('organization', 'id', $user->organization_id)
+                    ->where(function (Builder $query) use ($user) {
+                        $query->where('is_personal', false)->orWhere('administered_by', $user->id);
+                    });
             });
         }, function (Builder $query) use ($user) {
             $query->whereHas('project', function (Builder $query) use ($user) {
                 $query->where(function (Builder $query) use ($user) {
-                    $query->whereRelation('administeredBy', 'id', $user->id)->orWhereHas('users', function (Builder $query) use ($user) {
-                        $query->whereRaw('`users`.`id` = ?', $user->id);
-                    });
+                    $query->whereRelation('administeredBy', 'id', $user->id)
+                        ->orWhereHas('users', function (Builder $query) use ($user) {
+                            $query->whereRaw('`users`.`id` = ?', $user->id);
+                        });
                 });
             });
         });

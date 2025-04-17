@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Pages;
 
+use App\Helpers;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
 use App\Models\Task;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ShowDashboardGrid
+class DashboardGrid
 {
     public function __invoke(Request $request): Response
     {
@@ -31,6 +32,21 @@ class ShowDashboardGrid
             },
             'tasks' => function () {},
         ])->whereRelation('users', DB::raw('`users`.`id`'), $user->id)->get();
+
+        $subTasks = $tasks->filter(fn(Task $task) => $task->task_id !== null);
+
+        $parentTasks = $tasks->filter(fn(Task $task) => $task->task_id === null);
+
+        $subTasksToRemove = $subTasks->filter(function (Task $task) use ($parentTasks) {
+            foreach ($parentTasks as $parentTask) {
+                if (Helpers::findTaskRecursive($parentTask, $task)) {
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        $tasks = $tasks->filter(fn (Task $task) =>  !($task->task_id !== null && $subTasksToRemove->find($task)));
 
         return Inertia::render('DashboardGrid', [
             'your_tasks' => TaskResource::collection(resource: $tasks),

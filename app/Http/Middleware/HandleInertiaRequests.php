@@ -44,7 +44,9 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $yourProjects = auth()->check() ? Project::with('buckets.project')->yourProjects($request->user())->get() : collect();
-        $navProjects = $yourProjects->filter(fn (Project $project) => $project->is_personal === false);
+        $adminNavProjects = auth()->check() ? ($request->user()->is_admin ? Project::where('organization_id', $request->user()->organization_id)->whereNot(function (Builder $query) use ($request) {
+            $query->yourProjects($request->user());
+        })->where('is_personal', false)->get() : collect()) : collect();
         $yourBuckets = $yourProjects->map(fn(Project $project): Collection => $project->buckets)->flatten();
         $users = auth()->check()
             ? User::with(['projects'])->where('organization_id', $request->user()->organization_id)->get()
@@ -53,7 +55,8 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             ...$request->session()->get('inertia', []),
-            'nav_projects' => $navProjects,
+            'nav_projects' => $yourProjects,
+            'admin_nav_projects' => $adminNavProjects,
             'task_options' => auth()->check() ? [
                 'your_projects' => ProjectResource::collection($yourProjects),
                 'your_buckets' => BucketResource::collection($yourBuckets),

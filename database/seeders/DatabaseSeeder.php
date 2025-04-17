@@ -22,7 +22,9 @@ class DatabaseSeeder extends Seeder
         ]);
         // for most tests
         $admin = User::factory()->for($org)->create([
-            'name' => 'Test User',
+            'first_name' => 'Test',
+            'last_name' => 'User',
+            'initials' => 'TU',
             'email' => 'test@example.com',
             'is_admin' => true,
         ]);

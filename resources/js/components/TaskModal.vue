@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, useTemplateRef, nextTick } from 'vue';
+import { ref, reactive, computed, watch, useTemplateRef, nextTick } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import {
@@ -32,6 +32,17 @@ let {
   all_projects, all_buckets, all_users,
   open, parentTask,
 } = storeToRefs(store);
+
+let formErrors = reactive({
+  name: [],
+  description: [],
+  due_at: [],
+  priority: [],
+  status: [],
+  assigned_to: [],
+  projects: [],
+  buckets: [],
+});
 
 let query = ref('');
 
@@ -110,16 +121,29 @@ watch(projects, (newProjects) => {
 
 function onClose() {
   store.onClose();
+  formErrors.name = [];
+  formErrors.description = [];
+  formErrors.due_at = [];
+  formErrors.priority = [];
+  formErrors.status = [];
+  formErrors.assigned_to = [];
+  formErrors.buckets = [];
+  formErrors.projects = [];
 }
 
 function onSubmit() {
   if (id.value) {
     store.onFormSubmitUpdate(props.page, function (results) {
       emit('updatedTasks', results);
+      onClose();
     });
   } else {
     store.onFormSubmitCreate(props.page, function (results) {
       emit('updatedTasks', results);
+    }, function (errors) {
+      for (const e of Object.keys(errors)) {
+        formErrors[e] = Array.isArray(errors[e]) ? errors[e] : [errors[e]];
+      }
     });
   }
 }
@@ -158,7 +182,8 @@ function handleEscape() {
 function onEditSubTask(subTask) {
   open.value = false;
   setTimeout(() => {
-    store.setTask(subTask);
+    emit('loadTask', subTask.id);
+    // store.setTask(subTask);
     open.value = true;
   }, 750);
 }
@@ -249,10 +274,11 @@ function onBackToParentTask() {
                         <label
                           for="project-name"
                           class="block text-sm/6 font-medium text-gray-900 sm:mt-1.5"
-                          >Task name</label
                         >
+                          Task name
+                        </label>
                       </div>
-                      <div class="sm:col-span-2">
+                      <div class="sm:col-span-2 relative">
                         <input
                           type="text"
                           v-model="name"
@@ -260,6 +286,11 @@ function onBackToParentTask() {
                           id="project-name"
                           class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                         />
+                        <div v-show="formErrors.name.length > 0" class="absolute">
+                          <p v-for="err in formErrors.name" :key="err" class="text-sm text-red-600 dark:text-red-500">
+                            {{ err }}
+                          </p>
+                        </div>
                       </div>
                     </div>
 
@@ -351,15 +382,9 @@ function onBackToParentTask() {
                                         </li>
                                       </ComboboxOption>
                                     </div>
-                                    <div
-                                      v-if="unassignedFilteredPeople.length > 0"
-                                    >
-                                      <li
-                                        class="relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900"
-                                      >
-                                        <span class="font-medium"
-                                          >Suggested</span
-                                        >
+                                    <div v-if="unassignedFilteredPeople.length > 0">
+                                      <li class="relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900">
+                                        <span class="font-medium">Suggested</span>
                                       </li>
                                       <ComboboxOption
                                         v-for="user in unassignedFilteredPeople"

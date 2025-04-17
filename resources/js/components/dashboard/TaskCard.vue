@@ -56,7 +56,7 @@ let emit = defineEmits(['editTask', 'updateTaskStatus']);
               <!-- checkbox/title -->
               <div class="flex flex-row flex-nowrap grow-0 shrink-0 basis-auto items-center">
                 <TaskStatus :status="task.status" @update-task-status="(status) => $emit('updateTaskStatus', { task, newStatus: status })" />
-                <div class="grow-0 shrink-0 basis-[236px] ml-2" @click="$emit('editTask', task)">
+                <div class="grow-0 shrink-0 basis-[218px] ml-2 overflow-x-hidden text-ellipsis" @click="$emit('editTask', task)">
                   {{ task.name }}
                 </div>
               </div>

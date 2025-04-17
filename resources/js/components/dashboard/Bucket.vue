@@ -56,8 +56,8 @@ function onClickAddTask() {
             </div>
             <div v-if="subtitle">
               <div class="flex flex-row flex-wrap grow shrink basis-auto justify-start items-center min-h-0 min-w-0 p-0 ml-2">
-                <div class="flex flex-row flex-nowrap justify-center items-center h-4 py-px px-[7px] text-xs min-w-1 max-w-28 rounded border border-solid border-transparent bg-indigo-600 text-white">
-                  <span class=" overflow-ellipsis whitespace-nowrap overflow-hidden items-center pointer-events-none">
+                <div class="flex flex-row flex-nowrap justify-center items-center h-4 py-px px-[7px] text-xs min-w-1 rounded border border-solid border-transparent bg-indigo-600 text-white">
+                  <span class="overflow-ellipsis whitespace-nowrap overflow-hidden items-center pointer-events-none">
                     {{ subtitle }}
                   </span>
                 </div>

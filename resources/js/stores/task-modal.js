@@ -12,7 +12,7 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
 
   // create/new task form elements
   let task_id = ref(null); // parent task, if subtask
-  let parentTask = ref(true);
+  let parentTask = ref(false);
   let name = ref('');
   let description = ref('');
   let due_at = ref(null);
@@ -55,7 +55,7 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
 
   let all_tasks = ref([]);
 
-  function setTask(currentTask, parent = true) {
+  function setTask(currentTask, parent = false) {
     id.value = currentTask.id;
     task_id.value = currentTask.task_id;
     parentTask.value = parent;
@@ -125,7 +125,7 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
     form.buckets = buckets.value;
   }
 
-  function onFormSubmitCreate(page, onFinish) {
+  function onFormSubmitCreate(page, onFinish, onError) {
     preFormSubmit();
     form.post(route('create-task'), {
       headers: {
@@ -141,7 +141,7 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
     });
   }
 
-  function onSubTaskFormSubmitCreate(newName, page, onFinish) {
+  function onSubTaskFormSubmitCreate(newName, page, onFinish, onError) {
     subTaskForm.task_id = id.value;
     subTaskForm.name = newName;
     subTaskForm.post(route('create-task'), {
@@ -158,7 +158,13 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
     });
   }
 
-  function onSubTaskFormSubmitUpdateStatus(subTaskId, newStatus, page, onFinish) {
+  function onSubTaskFormSubmitUpdateStatus(
+    subTaskId,
+    newStatus,
+    page,
+    onFinish,
+    onError
+  ) {
     subTaskUpdateForm.status = newStatus;
 
     subTaskUpdateForm.put(route('update-task', subTaskId), {
@@ -175,7 +181,7 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
     });
   }
 
-  function onFormSubmitUpdate(page, onFinish) {
+  function onFormSubmitUpdate(page, onFinish, onError) {
     preFormSubmit();
     form.put(route('update-task', id.value), {
       headers: {
@@ -191,7 +197,7 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
     });
   }
 
-  function onFormSubmitDelete(page, onFinish) {
+  function onFormSubmitDelete(page, onFinish, onError) {
     form.delete(route('delete-task', id.value), {
       headers: {
         'X-From': page,
@@ -206,8 +212,8 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
     });
   }
 
-  function onError(err) {
-    console.log(err);
+  function getFormError(key) {
+    return form.errors[key];
   }
 
   return {
@@ -244,6 +250,7 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
     onFormSubmitDelete,
     onSubTaskFormSubmitCreate,
     onSubTaskFormSubmitUpdateStatus,
+    getFormError,
     onOpen,
     onClose,
     reset,

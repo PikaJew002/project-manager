@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Pages;
 
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ShowProjectGrid
+class ProjectGrid
 {
     public function __invoke(Request $request, int $id): Response
     {
@@ -21,14 +21,16 @@ class ShowProjectGrid
         $user = $request->user();
         $projectsIds = Project::yourProjects($user)->get()->pluck('id');
 
-        $tasks = Task::with(['createdBy', 'users', 'tasks'])->with([
-            'buckets' => function (BelongsToMany $query) use ($projectsIds) {
-                $query->whereIn('project_id', $projectsIds)->with('tasks');
-            },
+        $tasks = Task::with([
             'projects' => function (BelongsToMany $query) use ($projectsIds) {
                 $projectsString = $projectsIds->join(',');
                 $query->whereRaw("`projects`.`id` in ({$projectsString})")->with('buckets.tasks');
             },
+            'buckets' => function (BelongsToMany $query) use ($projectsIds) {
+                $query->whereIn('project_id', $projectsIds)->with('tasks');
+            },
+            'tasks' => function () {},
+            'users' => function () {},
         ])->where(function (Builder $query) use ($project) {
             $query->whereRelation('projects', DB::raw('`projects`.`id`'), $project->id)
                 ->orWhereHas('buckets', function (Builder $query) use ($project) {

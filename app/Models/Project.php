@@ -13,6 +13,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Project extends Model
 {
     /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array<string>|bool
+     */
+    protected $guarded = [];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -54,17 +61,11 @@ class Project extends Model
 
     public function scopeYourProjects(Builder $query, User $user): void
     {
-        $query->when($user->is_admin, function (Builder $query) use ($user) {
-            $query->whereRelation('organization', 'id', $user->organization_id)->where(function (Builder $query) use ($user) {
-                $query->where('is_personal', false)->orWhere('administered_by', $user->id);
-            });
-        }, function (Builder $query) use ($user) {
-            $query->where(function (Builder $query) use ($user) {
-                $query->whereRelation('administeredBy', 'id', $user->id)
-                    ->orWhereHas('users', function (Builder $query) use ($user) {
-                        $query->whereRaw('`users`.`id` = ?', $user->id);
-                    });
-            });
+        $query->where(function (Builder $query) use ($user) {
+            $query->whereRelation('administeredBy', 'id', $user->id)
+                ->orWhereHas('users', function (Builder $query) use ($user) {
+                    $query->whereRaw('`users`.`id` = ?', $user->id);
+                });
         });
     }
 }
