@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Organization\HasOrganization;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +14,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasOrganization;
 
     /**
      * The relationships that should always be loaded.
@@ -68,7 +69,7 @@ class User extends Authenticatable
 
     public function invites(): HasMany
     {
-        return $this->hasMany(Invite::class, 'invited_by');
+        return $this->hasMany(OrganizationInvitation::class, 'invited_by');
     }
 
     public function projects(): BelongsToMany

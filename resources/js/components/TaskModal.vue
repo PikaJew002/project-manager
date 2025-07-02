@@ -183,7 +183,6 @@ function onEditSubTask(subTask) {
   open.value = false;
   setTimeout(() => {
     emit('loadTask', subTask.id);
-    // store.setTask(subTask);
     open.value = true;
   }, 750);
 }
@@ -231,10 +230,10 @@ function onBackToParentTask() {
             <TransitionChild
               as="template"
               class="translate-x-full"
-              enter="transform transition ease-in-out duration-500 sm:duration-700"
+              enter="transform transition ease-in-out duration-500"
               enter-from="translate-x-full"
               enter-to="translate-x-0"
-              leave="transform transition ease-in-out duration-500 sm:duration-700"
+              leave="transform transition ease-in-out duration-500"
               leave-from="translate-x-0"
               leave-to="translate-x-full"
             >

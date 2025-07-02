@@ -26,7 +26,16 @@ let emit = defineEmits(['editTask', 'updateTaskStatus']);
       <template #col-1="{ task }">
         <td class="border-b border-gray-200 whitespace-nowrap bg-white text-sm text-gray-900 w-16">
           <div class="flex flex-row items-center justify-start select-none">
-            <div v-for="level in depth" :key="level" :class="['w-4 h-[65px] mr-1 rounded-sm', task.status !== 'Completed' ? 'bg-gray-200/75' : 'bg-indigo-600/75']"></div>
+            <div v-for="level in depth" :key="level" :class="['w-4 h-[65px] mr-1 rounded-sm', task.status !== 'Completed' ? 'bg-gray-200/75' : 'bg-indigo-600/75']">
+              <svg v-if="task.status === 'In Progress'" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <defs>
+                  <pattern id="pattern_3kSn" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+                    <line x1="0" y="0" x2="0" y2="6" stroke="rgb(79 70 229 / 0.75)" stroke-width="4" />
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#pattern_3kSn)" :opacity="1" />
+              </svg>
+            </div>
             <div class="ml-4 mr-2">
               <TaskStatus
                 classes="flex flex-row flex-nowrap grow-0 shrink-0 basis-[18px] justify-start items-center font-normal"

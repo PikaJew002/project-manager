@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projects', function (Blueprint $table) {
+        Schema::create('organization_invitations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('organization_id')->constrained();
-            $table->foreignId('administered_by')->constrained('users', 'id');
-            $table->string('name');
-            $table->string('initials', 5);
-            $table->boolean('is_personal')->default(false);
+            $table->foreignId('invited_by')->constrained('users', 'id');
+            $table->string('email');
+            $table->string('token', 16)->unique();
+            $table->timestamp('declined_at')->nullable();
             $table->timestamps();
-            $table->softDeletes();
+
+            $table->unique(['organization_id', 'email']);
         });
     }
 
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('projects');
+        Schema::dropIfExists('organization_invitations');
     }
 };

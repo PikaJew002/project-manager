@@ -29,9 +29,9 @@ let pagesStore = usePagesStore();
 
 pagesStore.setProject(props.project);
 
-taskModalStore.setUsers(page.props.task_options?.assignable_users);
-taskModalStore.setProjects(page.props.task_options?.your_projects);
-taskModalStore.setBuckets(page.props.task_options?.your_buckets);
+taskModalStore.setUsers(page.props.options?.assignable_users);
+taskModalStore.setProjects(page.props.options?.your_projects);
+taskModalStore.setBuckets(page.props.options?.your_buckets);
 
 let { open, projects, buckets, assigned_to, status } = storeToRefs(taskModalStore);
 
@@ -62,7 +62,7 @@ function updateTaskStatus({ task, newStatus }) {
 }
 
 function openCreateTaskModal(bucketId = null) {
-  assigned_to.value = [page.props.task_options?.assignable_users.find(u => u.is_me)];
+  assigned_to.value = [page.props.options?.assignable_users.find(u => u.is_me)];
   projects.value = [props.project.id];
   if (bucketId) {
     buckets.value = [bucketId];
@@ -88,8 +88,8 @@ function onNewBucketSubmit() {
     preserveScroll: true,
     onSuccess: (page) => {
       pagesStore.setProject(props.project);
-      taskModalStore.setProjects(page.props.task_options?.your_projects);
-      taskModalStore.setBuckets(page.props.task_options?.your_buckets);
+      taskModalStore.setProjects(page.props.options?.your_projects);
+      taskModalStore.setBuckets(page.props.options?.your_buckets);
       addBucketMode.value = false;
       form.reset();
     },
@@ -116,7 +116,7 @@ function onUpdatedTasks(results) {
 function onEditParentTask(taskId) {
   let foundTask = pagesStore.findTaskInProjectBoard(taskId);
   if (foundTask) {
-    let foundParent = pagesStore.findTaskInDashboardBoard(foundTask.task_id);
+    let foundParent = pagesStore.findTaskInProjectBoard(foundTask.task_id);
     if (foundParent) {
       taskModalStore.setTask(foundTask, true);
     } else {

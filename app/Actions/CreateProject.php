@@ -21,8 +21,8 @@ class CreateProject
             'initials' => $fields['initials'],
         ]);
 
-        return response()->redirectToRoute('project-board', $project->id);
+        $project->users()->attach($request->user()->id, ['accepted_at' => now()]);
 
-        // return response()->redirectTo($request->header('X-From'));
+        return response()->redirectToRoute('project-board', $project->id);
     }
 }

@@ -1,7 +1,8 @@
 <script setup>
 import { computed, ref, useTemplateRef, nextTick } from 'vue';
 import { Link, usePage, useForm } from '@inertiajs/vue3';
-import { onClickOutside } from '@vueuse/core';
+import { storeToRefs } from 'pinia';
+import { onClickOutside, useTemplateRefsList } from '@vueuse/core';
 import {
   Dialog,
   DialogPanel,
@@ -24,7 +25,10 @@ import {
 } from '@heroicons/vue/24/outline';
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid';
 import { useTaskModalStore } from '../stores/task-modal.js';
+import { useManageProjectStore } from '../stores/manage-project.js';
+import { usePagesStore } from '../stores/pages.js';
 import Banner from '../components/dashboard/Banner.vue';
+import ManageProjectModal from '../components/ManageProjectModal.vue';
 
 let props = defineProps({
   pageRoute: {
@@ -35,6 +39,10 @@ let props = defineProps({
     type: String,
   },
 });
+
+let store = useManageProjectStore();
+
+let { open, name, assigned_to } = storeToRefs(store);
 
 let showStatus = ref(true);
 
@@ -47,6 +55,8 @@ const currentURL = route(props.pageRoute, route().params);
 let page = usePage();
 
 let taskModalStore = useTaskModalStore();
+
+let pagesStore = usePagesStore();
 
 let auth = computed(() => page.props.auth);
 
@@ -70,6 +80,7 @@ let addProjectMode = ref(false);
 let newProjectForm = useTemplateRef('new-project-form');
 let newProjectNameInput = useTemplateRef('new-project-name-input');
 let addProjectButton = useTemplateRef('add-project-button');
+let editProjectForms = useTemplateRefsList();
 
 let newProjectName = ref('');
 let newProjectInitials = ref('');
@@ -98,7 +109,8 @@ function onNewProjectSubmit() {
     preserveState: true,
     preserveScroll: true,
     onSuccess: (results) => {
-      taskModalStore.setProjects(results.props.task_options?.your_projects);
+      pagesStore.setProject(results.props.project);
+      taskModalStore.setProjects(results.props.options?.your_projects);
       addProjectMode.value = false;
       form.reset();
     },
@@ -347,8 +359,8 @@ function handleEscape() {
                                   {{ project.name }}
                                 </span>
                               </div>
-                              <Menu as="div" class="flex mx-2">
-                                <Float placement="bottom-start">
+                              <Menu v-if="project.administeredBy.is_me" as="div" class="flex mx-2">
+                                <Float placement="bottom-end">
                                   <div>
                                     <MenuButton @click.prevent class="block size-5 rounded-md text-sm font-semibold text-gray-900">
                                       <svg class="inline" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M6.25 10a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0Zm5 0a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0ZM15 11.25a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Z" fill="currentColor"></path></svg>
@@ -358,11 +370,22 @@ function handleEscape() {
                                     <MenuItems class="w-56 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
                                       <div class="py-1">
                                         <MenuItem v-slot="{ active }">
-                                          <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">Rename</a>
+                                          <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">
+                                            Rename
+                                          </a>
                                         </MenuItem>
-                                        <MenuItem v-slot="{ active }">
-                                          <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">Delete</a>
-                                        </MenuItem>
+                                        <template v-if="!project.is_personal">
+                                          <MenuItem v-slot="{ active }">
+                                            <button @click.prevent="store.onOpen(project)" type="button" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">
+                                              Manage Project
+                                            </button>
+                                          </MenuItem>
+                                          <MenuItem v-slot="{ active }">
+                                            <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">
+                                              Delete
+                                            </a>
+                                          </MenuItem>
+                                        </template>
                                       </div>
                                     </MenuItems>
                                   </transition>
@@ -426,7 +449,7 @@ function handleEscape() {
                                   {{ project.name }}
                                 </span>
                               </div>
-                              <Menu as="div" class="flex mx-2 opacity-0 group-hover:opacity-100">
+                              <Menu v-if="project.administeredBy.is_me" as="div" class="flex mx-2 opacity-0 group-hover:opacity-100">
                                 <Float placement="bottom-start">
                                   <div>
                                     <MenuButton @click.prevent class="block size-5 rounded-md text-sm font-semibold text-gray-900">
@@ -437,11 +460,22 @@ function handleEscape() {
                                     <MenuItems class="w-56 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
                                       <div class="py-1">
                                         <MenuItem v-slot="{ active }">
-                                          <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">Rename</a>
+                                          <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">
+                                            Rename
+                                          </a>
                                         </MenuItem>
-                                        <MenuItem v-slot="{ active }">
-                                          <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">Delete</a>
-                                        </MenuItem>
+                                        <template v-if="!project.is_personal">
+                                          <MenuItem v-slot="{ active }">
+                                            <button @click.prevent="store.onOpen(project)" type="button" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">
+                                              Manage Project
+                                            </button>
+                                          </MenuItem>
+                                          <MenuItem v-slot="{ active }">
+                                            <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">
+                                              Delete
+                                            </a>
+                                          </MenuItem>
+                                        </template>
                                       </div>
                                     </MenuItems>
                                   </transition>
@@ -526,6 +560,7 @@ function handleEscape() {
                   <li
                     v-for="project in page.props.nav_projects"
                     :key="project.id"
+                    :ref="editProjectForms.set"
                     :class="[
                       isProjectPage && paramId == project.id
                         ? 'bg-gray-50 text-indigo-600'
@@ -550,7 +585,7 @@ function handleEscape() {
                             {{ project.name }}
                           </span>
                         </div>
-                        <Menu as="div" class="flex mx-2 opacity-0 group-hover:opacity-100">
+                        <Menu v-if="project.administeredBy.is_me" as="div" class="flex mx-2 opacity-0 group-hover:opacity-100">
                           <Float placement="bottom-start">
                             <div>
                               <MenuButton @click.prevent class="block size-5 rounded-md text-sm font-semibold text-gray-900">
@@ -561,11 +596,22 @@ function handleEscape() {
                               <MenuItems class="w-56 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
                                 <div class="py-1">
                                   <MenuItem v-slot="{ active }">
-                                    <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">Rename</a>
+                                    <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">
+                                      Rename
+                                    </a>
                                   </MenuItem>
-                                  <MenuItem v-slot="{ active }">
-                                    <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">Delete</a>
-                                  </MenuItem>
+                                  <template v-if="!project.is_personal">
+                                    <MenuItem v-slot="{ active }">
+                                      <button @click.prevent="store.onOpen(project)" type="button" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block w-full text-left px-4 py-2 text-sm']">
+                                        Manage Project
+                                      </button>
+                                    </MenuItem>
+                                    <MenuItem v-slot="{ active }">
+                                      <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">
+                                        Delete
+                                      </a>
+                                    </MenuItem>
+                                  </template>
                                 </div>
                               </MenuItems>
                             </transition>
@@ -629,7 +675,7 @@ function handleEscape() {
                             {{ project.name }}
                           </span>
                         </div>
-                        <Menu as="div" class="flex mx-2 opacity-0 group-hover:opacity-100">
+                        <Menu v-if="project.administeredBy.is_me" as="div" class="flex mx-2 opacity-0 group-hover:opacity-100">
                           <Float placement="bottom-start">
                             <div>
                               <MenuButton @click.prevent class="block size-5 rounded-md text-sm font-semibold text-gray-900">
@@ -641,6 +687,11 @@ function handleEscape() {
                                 <div class="py-1">
                                   <MenuItem v-slot="{ active }">
                                     <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">Rename</a>
+                                  </MenuItem>
+                                  <MenuItem v-slot="{ active }">
+                                    <button type="button" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">
+                                      Manage Users
+                                    </button>
                                   </MenuItem>
                                   <MenuItem v-slot="{ active }">
                                     <a href="#" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">Delete</a>

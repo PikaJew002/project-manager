@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('organizations', function (Blueprint $table) {
+        Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->index();
+            $table->foreignId('organization_id')->nullable()->constrained();
+            $table->foreignId('administered_by')->constrained('users', 'id');
             $table->string('name');
-            $table->boolean('personal_team');
+            $table->string('initials', 5);
+            $table->boolean('is_personal')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('organizations');
+        Schema::dropIfExists('projects');
     }
 };

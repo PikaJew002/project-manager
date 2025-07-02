@@ -2,7 +2,7 @@
 
 namespace App\Http\Pages;
 
-use App\Models\Invite;
+use App\Models\OrganizationInvitation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -17,7 +17,7 @@ class RegisterFromInvite
             session()->flash('inertia', ['status' => '']);
         }
 
-        $invite = Invite::with(['organization', 'invitedBy'])->where('token', $token)->first();
+        $invite = OrganizationInvitation::with(['organization', 'invitedBy'])->where('token', $token)->first();
 
         if ($invite === null) {
             session()->flash('inertia', ['status' => "The invite link you are trying to access has been declined and deleted after a week."]);

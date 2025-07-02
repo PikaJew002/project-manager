@@ -47,6 +47,8 @@ class RegisterOrganization
 
         Auth::login($user);
 
+        session()->flash('inertia', ['status' => "New organization {$organization->name} created!"]);
+
         return response()->redirectToRoute('organization');
     }
 }

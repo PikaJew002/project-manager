@@ -2,12 +2,12 @@
 
 namespace App\Actions;
 
-use App\Models\Invite;
+use App\Models\OrganizationInvitation;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 
-class DeclineInvite
+class DeclineOrganizationInvitation
 {
     public function __invoke(Request $request)
     {
@@ -16,7 +16,7 @@ class DeclineInvite
                 'required',
                 'string',
                 function (string $attribute, mixed $value, Closure $fail) {
-                    if (Invite::where('token', Crypt::decryptString($value))->doesntExist()) {
+                    if (OrganizationInvitation::where('token', Crypt::decryptString($value))->doesntExist()) {
                         $fail("The {$attribute} is invalid.");
                     }
                 },
@@ -25,7 +25,7 @@ class DeclineInvite
 
         $token = Crypt::decryptString($fields['token']);
 
-        $invite = Invite::where('token', $token)->firstOrFail();
+        $invite = OrganizationInvitation::where('token', $token)->firstOrFail();
 
         $invite->update([
             'declined_at' => now(),

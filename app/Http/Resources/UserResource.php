@@ -25,6 +25,9 @@ class UserResource extends JsonResource
             'is_me' => $request->user()->id === $this->id,
             'organization' => $this->organization,
             'projects' => ProjectResource::collection($this->whenLoaded('projects')),
+            'accepted_at' => $this->whenPivotLoaded('project_user', function () {
+                return $this->pivot->accepted_at;
+            }),
             'created_at' => $this->created_at,
         ];
     }

@@ -2,7 +2,7 @@
 
 namespace App\Actions;
 
-use App\Models\Invite;
+use App\Models\OrganizationInvitation;
 use App\Models\Project;
 use App\Models\User;
 use Closure;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
-class AcceptInvite
+class AcceptOrganizationInvitation
 {
     public function __invoke(Request $request)
     {
@@ -25,14 +25,14 @@ class AcceptInvite
                 'required',
                 'string',
                 function (string $attribute, mixed $value, Closure $fail) {
-                    if (Invite::where('token', Crypt::decryptString($value))->doesntExist()) {
+                    if (OrganizationInvitation::where('token', Crypt::decryptString($value))->doesntExist()) {
                         $fail("The {$attribute} is invalid.");
                     }
                 },
             ],
         ]);
 
-        $invite = Invite::with('organization')->where('token', Crypt::decryptString($fields['token']))->firstOrFail();
+        $invite = OrganizationInvitation::with('organization')->where('token', Crypt::decryptString($fields['token']))->firstOrFail();
 
         $user = User::create([
             'organization_id' => $invite->organization->id,

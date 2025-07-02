@@ -30,11 +30,11 @@ class Organization extends Model
 
     public function invites(): HasMany
     {
-        return $this->hasMany(Invite::class);
+        return $this->hasMany(OrganizationInvitation::class);
     }
 
     public function invitesNotDeclined(): HasMany
     {
-        return $this->hasMany(Invite::class)->whereNull('declined_at');
+        return $this->hasMany(OrganizationInvitation::class)->whereNull('declined_at');
     }
 }

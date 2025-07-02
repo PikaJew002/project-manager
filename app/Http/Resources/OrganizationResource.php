@@ -18,7 +18,7 @@ class OrganizationResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'users' => UserResource::collection($this->whenLoaded('users')),
-            'invites' => InviteResource::collection($this->whenLoaded('invitesNotDeclined')),
+            'invites' => OrganizationInvitationResource::collection($this->whenLoaded('invitesNotDeclined')),
         ];
     }
 }

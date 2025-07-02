@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Invite extends Model
+class OrganizationInvitation extends Model
 {
     use Prunable;
 

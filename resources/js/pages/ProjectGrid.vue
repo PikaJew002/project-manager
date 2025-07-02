@@ -29,9 +29,9 @@ let pagesStore = usePagesStore();
 pagesStore.setProject(props.project)
 pagesStore.setTasks(props.project_tasks);
 
-taskModalStore.setUsers(page.props.task_options?.assignable_users);
-taskModalStore.setProjects(page.props.task_options?.your_projects);
-taskModalStore.setBuckets(page.props.task_options?.your_buckets);
+taskModalStore.setUsers(page.props.options?.assignable_users);
+taskModalStore.setProjects(page.props.options?.your_projects);
+taskModalStore.setBuckets(page.props.options?.your_buckets);
 
 let { open, projects, assigned_to, status } = storeToRefs(taskModalStore);
 
@@ -60,7 +60,7 @@ function updateTaskStatus({ task, newStatus }) {
 }
 
 function openCreateTaskModal() {
-  assigned_to.value = [page.props.task_options?.assignable_users.find(u => u.is_me)];
+  assigned_to.value = [page.props.options?.assignable_users.find(u => u.is_me)];
   projects.value = [props.project.id];
 
   open.value = true;
