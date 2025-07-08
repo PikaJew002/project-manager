@@ -12,11 +12,18 @@ class OrganizationInvitation extends Model
     use Prunable;
 
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
-     * @var array<string>|bool
+     * @var array<int, string>
      */
-    protected $guarded = [];
+    protected $fillable = [
+        'organization_id',
+        'invited_by',
+        'email',
+        'role',
+        'token',
+        'declined_at',
+    ];
 
     public function organization(): BelongsTo
     {

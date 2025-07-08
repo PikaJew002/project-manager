@@ -19,9 +19,10 @@ class CreateOrganizationInvitation
         ]);
 
         $invite = OrganizationInvitation::create([
-            'organization_id' => $request->user()->organization_id,
+            'organization_id' => $request->user()->currentTeam->id,
             'invited_by' => $request->user()->id,
             'email' => $request->email,
+            'role' => 'member',
             'token' => Str::random(16),
         ]);
 

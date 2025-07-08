@@ -4,10 +4,11 @@ namespace App\Actions;
 
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 class CreateProject
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): RedirectResponse
     {
         $fields = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -15,7 +16,7 @@ class CreateProject
         ]);
 
         $project = Project::create([
-            'organization_id' => $request->user()->organization_id,
+            'organization_id' => $request->user()->currentTeam->id,
             'administered_by' => $request->user()->id,
             'name' => $fields['name'],
             'initials' => $fields['initials'],

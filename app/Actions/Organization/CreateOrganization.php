@@ -3,10 +3,11 @@
 namespace App\Actions\Organization;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 class CreateOrganization
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): RedirectResponse
     {
         $input = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -14,14 +15,11 @@ class CreateOrganization
 
         $user = $request->user();
 
-        AddingTeam::dispatch($user);
-        $user->switchTeam($team = $user->ownedTeams()->create([
+        $organization = $user->createOrganization([
             'name' => $input['name'],
             'personal_team' => false,
-        ]));
+        ]);
 
-        return $team;
-
-        return $this->redirectPath($creator);
+        return redirect()->route('teams.show', $organization);
     }
 }

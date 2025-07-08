@@ -115,3 +115,17 @@ class Roles
         return User::query()->where('email', $email)->firstOrFail();
     }
 }
+
+// Define the available roles
+Roles::role('admin', 'Administrator', [
+    'read',
+    'create',
+    'update',
+    'delete',
+])->description('Administrators can perform any action.');
+
+Roles::role('member', 'Member', [
+    'read',
+    'create',
+    'update',
+])->description('Members can read, create, and update resources.');

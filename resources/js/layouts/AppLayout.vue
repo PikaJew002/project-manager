@@ -62,16 +62,12 @@ let auth = computed(() => page.props.auth);
 
 const nav = [
   { name: 'Your Tasks', href: route('dashboard-grid'), icon: HomeIcon, route: ['dashboard-grid', 'dashboard-board'] },
-  { name: 'Organization', href: route('organization'), icon: UsersIcon, route: ['organization'] },
+  { name: 'Teams', href: route('teams.create'), icon: UsersIcon, route: ['teams.create', 'teams.show'] },
   { name: 'Projects', href: '#', icon: FolderIcon, route: [] },
 ];
 
 let navigation = computed(() => {
-  if (auth.value?.user.is_admin) {
-    return nav;
-  }
-
-  return nav.filter((item) => item.name !== 'Organization');
+  return nav;
 });
 
 let sidebarOpen = ref(false);
@@ -213,7 +209,7 @@ function handleEscape() {
               >
                 <div class="px-4 py-3">
                   <p class="text-sm">
-                    {{ auth.user?.organization.name }}
+                    {{ auth.user?.currentTeam?.name || 'No Team Selected' }}
                   </p>
                   <p class="truncate text-sm font-medium text-gray-900">
                     {{ auth.user?.email }}

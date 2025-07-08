@@ -14,6 +14,10 @@ use App\Actions\RegisterOrganization as RegisterOrganizationAction;
 use App\Actions\ResetOrganizationInvitation;
 use App\Actions\UpdateBucket;
 use App\Actions\UpdatePersonalTask;
+use App\Http\Controllers\CurrentTeamController;
+use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TeamInvitationController;
+use App\Http\Controllers\TeamMemberController;
 use App\Http\Pages\DashboardBoard;
 use App\Http\Pages\DashboardGrid;
 use App\Http\Pages\Organization;
@@ -66,45 +70,21 @@ Route::middleware('auth')->group(function () {
     Route::redirect('/dashboard', '/dashboard/grid');
 });
 
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/teams/create', [TeamController::class, 'create'])->name('teams.create');
+    Route::post('/teams', [TeamController::class, 'store'])->name('teams.store');
+    Route::get('/teams/{team}', [TeamController::class, 'show'])->name('teams.show');
+    Route::put('/teams/{team}', [TeamController::class, 'update'])->name('teams.update');
+    Route::delete('/teams/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
+    Route::put('/current-team', [CurrentTeamController::class, 'update'])->name('current-team.update');
+    Route::post('/teams/{team}/members', [TeamMemberController::class, 'store'])->name('team-members.store');
+    Route::put('/teams/{team}/members/{user}', [TeamMemberController::class, 'update'])->name('team-members.update');
+    Route::delete('/teams/{team}/members/{user}', [TeamMemberController::class, 'destroy'])->name('team-members.destroy');
 
-$authMiddleware = config('jetstream.guard')
-    ? 'auth:' . config('jetstream.guard')
-    : 'auth';
+    Route::get('/team-invitations/{invitation}', [TeamInvitationController::class, 'accept'])
+        ->middleware(['signed'])
+        ->name('team-invitations.accept');
 
-$authSessionMiddleware = config('jetstream.auth_session', false)
-    ? config('jetstream.auth_session')
-    : null;
-
-Route::group(['middleware' => array_values(array_filter([$authMiddleware, $authSessionMiddleware]))], function () {
-    // User & Profile...
-    Route::get('/user/profile', [UserProfileController::class, 'show'])
-        ->name('profile.show');
-
-    Route::delete('/user/other-browser-sessions', [OtherBrowserSessionsController::class, 'destroy'])
-        ->name('other-browser-sessions.destroy');
-
-    Route::delete('/user/profile-photo', [ProfilePhotoController::class, 'destroy'])
-        ->name('current-user-photo.destroy');
-
-    // Route::delete('/user', [CurrentUserController::class, 'destroy'])
-    //     ->name('current-user.destroy');
-
-    Route::group(['middleware' => 'verified'], function () {
-        Route::get('/teams/create', [TeamController::class, 'create'])->name('teams.create');
-        Route::post('/teams', [TeamController::class, 'store'])->name('teams.store');
-        Route::get('/teams/{team}', [TeamController::class, 'show'])->name('teams.show');
-        Route::put('/teams/{team}', [TeamController::class, 'update'])->name('teams.update');
-        Route::delete('/teams/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
-        Route::put('/current-team', [CurrentTeamController::class, 'update'])->name('current-team.update');
-        Route::post('/teams/{team}/members', [TeamMemberController::class, 'store'])->name('team-members.store');
-        Route::put('/teams/{team}/members/{user}', [TeamMemberController::class, 'update'])->name('team-members.update');
-        Route::delete('/teams/{team}/members/{user}', [TeamMemberController::class, 'destroy'])->name('team-members.destroy');
-
-        Route::get('/team-invitations/{invitation}', [TeamInvitationController::class, 'accept'])
-            ->middleware(['signed'])
-            ->name('team-invitations.accept');
-
-        Route::delete('/team-invitations/{invitation}', [TeamInvitationController::class, 'destroy'])
-            ->name('team-invitations.destroy');
-    });
+    Route::delete('/team-invitations/{invitation}', [TeamInvitationController::class, 'destroy'])
+        ->name('team-invitations.destroy');
 });

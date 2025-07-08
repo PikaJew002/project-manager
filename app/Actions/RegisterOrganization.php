@@ -2,17 +2,17 @@
 
 namespace App\Actions;
 
-use App\Models\Organization;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
 class RegisterOrganization
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): RedirectResponse
     {
         $fields = $request->validate([
             'first_name' => ['required', 'string', 'max:100'],
@@ -23,18 +23,17 @@ class RegisterOrganization
             'organization_name' => ['required', 'string', 'max:255'],
         ]);
 
-        $organization = Organization::create([
-            'name' => $fields['organization_name'],
-        ]);
-
         $user = User::create([
-            'organization_id' => $organization->id,
             'first_name' => $fields['first_name'],
             'last_name' => $fields['last_name'],
             'initials' => $fields['initials'],
-            'is_admin' => true,
             'email' => $fields['email'],
             'password' => Hash::make($fields['password']),
+        ]);
+
+        $organization = $user->createOrganization([
+            'name' => $fields['organization_name'],
+            'personal_team' => true,
         ]);
 
         Project::create([

@@ -2,7 +2,6 @@
 
 namespace App\Organization;
 
-use App\Models\Membership;
 use App\Models\Organization;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,7 +12,7 @@ use Illuminate\Support\Str;
 trait HasOrganization
 {
     /**
-     * Determine if the given team is the current team.
+     * Determine if the given organization is the current organization.
      *
      * @param  mixed  $organization
      * @return bool
@@ -24,7 +23,7 @@ trait HasOrganization
     }
 
     /**
-     * Get the current team of the user's context.
+     * Get the current organization of the user's context.
      */
     public function currentTeam(): BelongsTo
     {
@@ -36,7 +35,7 @@ trait HasOrganization
     }
 
     /**
-     * Switch the user's context to the given team.
+     * Switch the user's context to the given organization.
      *
      * @param  mixed  $organization
      */
@@ -56,7 +55,7 @@ trait HasOrganization
     }
 
     /**
-     * Get all of the teams the user owns or belongs to.
+     * Get all of the organizations the user owns or belongs to.
      */
     public function allTeams(): Collection
     {
@@ -64,26 +63,26 @@ trait HasOrganization
     }
 
     /**
-     * Get all of the teams the user owns.
+     * Get all of the organizations the user owns.
      */
     public function ownedTeams(): HasMany
     {
-        return $this->hasMany(Organization::class);
+        return $this->hasMany(Organization::class, 'user_id');
     }
 
     /**
-     * Get all of the teams the user belongs to.
+     * Get all of the organizations the user belongs to.
      */
     public function teams(): BelongsToMany
     {
-        return $this->belongsToMany(Organization::class, Membership::class)
+        return $this->belongsToMany(Organization::class, 'organization_user')
             ->withPivot('role')
             ->withTimestamps()
             ->as('membership');
     }
 
     /**
-     * Get the user's "personal" team.
+     * Get the user's "personal" organization.
      */
     public function personalTeam(): Organization
     {
@@ -91,7 +90,7 @@ trait HasOrganization
     }
 
     /**
-     * Determine if the user owns the given team.
+     * Determine if the user owns the given organization.
      */
     public function ownsTeam(Organization $organization): bool
     {
@@ -99,11 +98,19 @@ trait HasOrganization
             return false;
         }
 
-        return $this->id == $organization->{$this->getForeignKey()};
+        return $this->id == $organization->user_id;
     }
 
     /**
-     * Determine if the user belongs to the given team.
+     * Alias for ownsTeam for consistency.
+     */
+    public function ownsOrganization(Organization $organization): bool
+    {
+        return $this->ownsTeam($organization);
+    }
+
+    /**
+     * Determine if the user belongs to the given organization.
      */
     public function belongsToTeam(?Organization $organization): bool
     {
@@ -117,7 +124,7 @@ trait HasOrganization
     }
 
     /**
-     * Get the role that the user has on the team.
+     * Get the role that the user has on the organization.
      */
     public function teamRole(Organization $organization): ?Role
     {
@@ -139,7 +146,7 @@ trait HasOrganization
     }
 
     /**
-     * Determine if the user has the given role on the given team.
+     * Determine if the user has the given role on the given organization.
      */
     public function hasTeamRole(Organization $organization, string $role): bool
     {
@@ -154,7 +161,7 @@ trait HasOrganization
     }
 
     /**
-     * Get the user's permissions for the given team.
+     * Get the user's permissions for the given organization.
      */
     public function teamPermissions(Organization $organization): array
     {
@@ -170,7 +177,7 @@ trait HasOrganization
     }
 
     /**
-     * Determine if the user has the given permission on the given team.
+     * Determine if the user has the given permission on the given organization.
      */
     public function hasTeamPermission(Organization $organization, string $permission): bool
     {
@@ -188,5 +195,28 @@ trait HasOrganization
             in_array('*', $permissions) ||
             (Str::endsWith($permission, ':create') && in_array('*:create', $permissions)) ||
             (Str::endsWith($permission, ':update') && in_array('*:update', $permissions));
+    }
+
+    /**
+     * Create a new organization for the user.
+     */
+    public function createOrganization(array $attributes): Organization
+    {
+        $organization = $this->ownedTeams()->create($attributes);
+
+        $this->switchTeam($organization);
+
+        return $organization;
+    }
+
+    /**
+     * Create a new personal organization for the user.
+     */
+    public function createPersonalOrganization(): Organization
+    {
+        return $this->createOrganization([
+            'name' => $this->first_name . "'s Organization",
+            'personal_team' => true,
+        ]);
     }
 }

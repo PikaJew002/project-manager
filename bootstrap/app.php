@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web([
             HandleInertiaRequests::class,
         ]);
+        $middleware->alias([
+            'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        ]);
         $middleware->redirectGuestsTo(fn() => route('welcome'));
         $middleware->redirectUsersTo(fn () => route('dashboard-grid'));
     })
