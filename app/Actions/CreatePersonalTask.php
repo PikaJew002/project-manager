@@ -29,9 +29,7 @@ class CreatePersonalTask
             'assigned_to.*' => ['integer', Rule::exists('users', 'id')],
         ]);
 
-        $task = Task::createFrom($fields, $request->user());
-
-        $request->session()->flash('inertia.task', new TaskResource($task));
+        Task::createFrom($fields, $request->user());
 
         return response()->redirectTo($request->header('X-From'));
     }
