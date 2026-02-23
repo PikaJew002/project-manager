@@ -14,14 +14,25 @@ let page = usePage();
   >
     <div class="w-full max-w-sm">
       <div class="flex flex-col gap-8">
-        <div class="flex flex-col items-center gap-4">
+        <div class="flex flex-col gap-y-6 items-center">
           <Link
             :href="route('welcome')"
             class="flex flex-col items-center gap-2 font-medium focus-visible:outline-none focus-visible:ring-indigo-600 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            <div class="mb-1 flex h-9 w-9 items-center justify-center rounded-md text-indigo-600">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 42">
-                <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M17.2 5.633 8.6.855 0 5.633v26.51l16.2 9 16.2-9v-8.442l7.6-4.223V9.856l-8.6-4.777-8.6 4.777V18.3l-5.6 3.111V5.633ZM38 18.301l-5.6 3.11v-6.157l5.6-3.11V18.3Zm-1.06-7.856-5.54 3.078-5.54-3.079 5.54-3.078 5.54 3.079ZM24.8 18.3v-6.157l5.6 3.111v6.158L24.8 18.3Zm-1 1.732 5.54 3.078-13.14 7.302-5.54-3.078 13.14-7.3v-.002Zm-16.2 7.89 7.6 4.222V38.3L2 30.966V7.92l5.6 3.111v16.892ZM8.6 9.3 3.06 6.222 8.6 3.143l5.54 3.08L8.6 9.3Zm21.8 15.51-13.2 7.334V38.3l13.2-7.334v-6.156ZM9.6 11.034l5.6-3.11v14.6l-5.6 3.11v-14.6Z"/>
+            <div class="flex size-40 items-center justify-center rounded-md">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="20 20 120 120">
+                <title>Project Manager</title>
+                <defs>
+                    <linearGradient id="logoGradient" x1="0" y1="0" x2="140" y2="140" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#2563EB"></stop>
+                        <stop offset="1" stop-color="#7C3AED"></stop>
+                    </linearGradient>
+                </defs>
+                <rect x="20" y="20" width="120" height="120" rx="24" fill="url(#logoGradient)"></rect>
+                <rect x="40" y="45" width="14" height="60" rx="4" fill="white" opacity="0.95"></rect>
+                <rect x="60" y="55" width="14" height="50" rx="4" fill="white" opacity="0.95"></rect>
+                <rect x="80" y="65" width="14" height="40" rx="4" fill="white" opacity="0.95"></rect>
+                <path d="M100 85 L115 100 L135 70" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
             </div>
             <span class="sr-only">Logo</span>

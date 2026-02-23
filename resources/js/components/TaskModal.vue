@@ -166,8 +166,6 @@ function onNewTaskSubmit() {
     emit('updatedTasks', results);
     addTaskMode.value = false;
 
-    console.log('onNewTaskSubmit', results.props.task);
-
     if (results.props.task) {
       tasks.value.push(results.props.task);
     }
