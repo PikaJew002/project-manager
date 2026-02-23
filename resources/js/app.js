@@ -8,7 +8,6 @@ import { createPinia } from "pinia";
 let pinia = createPinia();
 
 router.on('before', (event) => {
-  console.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
   event.detail.visit.headers = {
     ...event.detail.visit.headers,
     'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,

@@ -277,14 +277,23 @@ function handleEscape() {
               </TransitionChild>
               <!-- Sidebar component, swap this element with another sidebar if you like -->
               <div
-                class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4"
+                class="flex grow flex-col gap-y-3 overflow-y-auto bg-white px-6 py-4"
               >
                 <div class="flex h-16 shrink-0 items-center">
-                  <img
-                    class="h-8 w-auto"
-                    src="/logo.svg"
-                    alt="Your Company"
-                  />
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="20 20 120 120" class="size-12">
+                    <title>Project Manager</title>
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0" y1="0" x2="140" y2="140" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#2563EB"></stop>
+                            <stop offset="1" stop-color="#7C3AED"></stop>
+                        </linearGradient>
+                    </defs>
+                    <rect x="20" y="20" width="120" height="120" rx="24" fill="url(#logoGradient)"></rect>
+                    <rect x="40" y="45" width="14" height="60" rx="4" fill="white" opacity="0.95"></rect>
+                    <rect x="60" y="55" width="14" height="50" rx="4" fill="white" opacity="0.95"></rect>
+                    <rect x="80" y="65" width="14" height="40" rx="4" fill="white" opacity="0.95"></rect>
+                    <path d="M100 85 L115 100 L135 70" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
                 </div>
                 <nav class="flex flex-1 flex-col">
                   <ul role="list" class="flex flex-1 flex-col gap-y-7">
@@ -480,14 +489,23 @@ function handleEscape() {
       >
         <!-- Sidebar component, swap this element with another sidebar if you like -->
         <div
-          class="flex grow flex-col gap-y-5 overflow-y-auto overflow-x-visible min-h-0 min-w-0 border-r border-gray-200 bg-white px-6 pb-4"
+          class="flex grow flex-col gap-y-3 overflow-y-auto overflow-x-visible min-h-0 min-w-0 border-r border-gray-200 bg-white px-6 py-4"
         >
           <div class="flex h-16 shrink-0 items-center">
-            <img
-              class="h-8 w-auto"
-              src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-              alt="Your Company"
-            />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="20 20 120 120" class="size-12">
+              <title>Project Manager</title>
+              <defs>
+                  <linearGradient id="logoGradient" x1="0" y1="0" x2="140" y2="140" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#2563EB"></stop>
+                      <stop offset="1" stop-color="#7C3AED"></stop>
+                  </linearGradient>
+              </defs>
+              <rect x="20" y="20" width="120" height="120" rx="24" fill="url(#logoGradient)"></rect>
+              <rect x="40" y="45" width="14" height="60" rx="4" fill="white" opacity="0.95"></rect>
+              <rect x="60" y="55" width="14" height="50" rx="4" fill="white" opacity="0.95"></rect>
+              <rect x="80" y="65" width="14" height="40" rx="4" fill="white" opacity="0.95"></rect>
+              <path d="M100 85 L115 100 L135 70" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
           </div>
           <nav class="flex flex-1 flex-col">
             <ul role="list" class="flex flex-1 flex-col gap-y-7">
