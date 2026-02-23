@@ -22,8 +22,8 @@ class InviteResource extends JsonResource
             'invitedBy' => new UserResource($this->whenLoaded('invitedBy')),
             'email' => $this->email,
             'token' => $this->token,
-            'declined_at' => $this->declined_at,
-            'created_at' => $this->created_at,
+            'declined_at' => $this->declined_at?->tz(config('app.user_timezone', config('app.timezone'))),
+            'created_at' => $this->created_at?->tz(config('app.user_timezone', config('app.timezone'))),
         ];
     }
 }

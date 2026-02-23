@@ -30,6 +30,7 @@ class AcceptInvite
                     }
                 },
             ],
+            'timezone' => ['nullable', 'string', 'max:255'],
         ]);
 
         $invite = Invite::with('organization')->where('token', Crypt::decryptString($fields['token']))->firstOrFail();
@@ -41,6 +42,7 @@ class AcceptInvite
             'initials' => $fields['initials'],
             'email' => $invite->email,
             'password' => Hash::make($fields['password']),
+            'timezone' => $fields['timezone'] ?? null,
         ]);
 
         Project::create([

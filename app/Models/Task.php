@@ -4,7 +4,9 @@ namespace App\Models;
 
 use App\Enums\TaskPriority;
 use App\Enums\TaskProgress;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use App\Enums\TaskPriorityOrder;
+use App\Enums\TaskProgressOrder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -38,16 +40,39 @@ class Task extends Model
     {
         return [
             'priority' => TaskPriority::class,
+            'due_at' => 'datetime',
+            'started_at' => 'datetime',
+            'completed_at' => 'datetime',
         ];
     }
 
     /**
-     * Interact with the user's address.
+     * Get the task progress.
      */
     protected function status(): Attribute
     {
         return Attribute::make(
             get: fn(mixed $value, array $attributes) => TaskProgress::getState($attributes),
+        );
+    }
+
+    /**
+     * Get the task status order.
+     */
+    protected function statusOrder(): Attribute
+    {
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) => TaskProgressOrder::getOrder(TaskProgress::getState($attributes))->value,
+        );
+    }
+
+    /**
+     * Get the task priority order.
+     */
+    protected function priorityOrder(): Attribute
+    {
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) => TaskPriorityOrder::getOrder(TaskPriority::tryFrom($attributes['priority']))->value,
         );
     }
 
@@ -125,12 +150,22 @@ class Task extends Model
 
         [$startedAt, $completedAt] = TaskProgress::stateInitial($fields['status'] ?? TaskProgress::DEFAULT);
 
+        if (array_key_exists('due_at', $fields)) {
+            $dueAt = Carbon::createFromFormat(
+                'Y-m-d\TH:i',
+                $fields['due_at'],
+                config('app.user_timezone', config('app.timezone'))
+            )->tz(config('app.timezone'));
+        } else {
+            $dueAt = null;
+        }
+
         $task = Task::create([
             'task_id' => $fields['task_id'] ?? null,
             'created_by' => $userId,
             'name' => $fields['name'],
             'description' => $fields['description'] ?? null,
-            'due_at' => $fields['due_at'] ?? null,
+            'due_at' => $dueAt,
             'started_at' => $startedAt,
             'completed_at' => $completedAt,
             'priority' => $fields['priority'] ?? TaskPriority::DEFAULT,
@@ -171,7 +206,11 @@ class Task extends Model
             $toUpdate['description'] = $fields['description'];
         }
         if (array_key_exists('due_at', $fields)) {
-            $toUpdate['due_at'] = $fields['due_at'];
+            $toUpdate['due_at'] = Carbon::createFromFormat(
+                'Y-m-d\TH:i',
+                $fields['due_at'],
+                config('app.user_timezone', config('app.timezone'))
+            )->tz(config('app.timezone'));
         }
         if (array_key_exists('name', $fields)) {
             $toUpdate['priority'] = $fields['priority'];

@@ -25,7 +25,7 @@ class UserResource extends JsonResource
             'is_me' => $request->user()->id === $this->id,
             'organization' => $this->organization,
             'projects' => ProjectResource::collection($this->whenLoaded('projects')),
-            'created_at' => $this->created_at,
+            'created_at' => $this->created_at?->tz(config('app.user_timezone', config('app.timezone'))),
         ];
     }
 }

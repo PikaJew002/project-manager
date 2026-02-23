@@ -113,10 +113,10 @@ function onUpdatedTasks(results) {
   pagesStore.setProject(results.props.project);
 }
 
-function onEditParentTask(taskId) {
+function onChangeTask(taskId) {
   let foundTask = pagesStore.findTaskInProjectBoard(taskId);
   if (foundTask) {
-    let foundParent = pagesStore.findTaskInDashboardBoard(foundTask.task_id);
+    let foundParent = pagesStore.findTaskInProjectBoard(foundTask.task_id);
     if (foundParent) {
       taskModalStore.setTask(foundTask, true);
     } else {
@@ -198,6 +198,6 @@ function onEditParentTask(taskId) {
         </div>
       </BucketWrapper>
     </BoardDashboard>
-    <TaskModal :page="currentURL" @updated-tasks="onUpdatedTasks" @load-task="onEditParentTask" />
+    <TaskModal :page="currentURL" @updated-tasks="onUpdatedTasks" @load-task="onChangeTask" />
   </AppLayout>
 </template>

@@ -6,7 +6,6 @@ use App\Helpers;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
 use App\Models\Task;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +25,7 @@ class DashboardGrid
             'users' => function (BelongsToMany $query) use ($user) {
                 $query->whereRelation('organization', 'id', $user->organization_id);
             },
-            'projects' => function (Builder $query) use ($projectsIds) {
+            'projects' => function (BelongsToMany $query) use ($projectsIds) {
                 $projectsString = $projectsIds->join(',');
                 $query->with('buckets')->whereRaw("`projects`.`id` in ({$projectsString})");
             },
@@ -46,7 +45,23 @@ class DashboardGrid
             return false;
         });
 
-        $tasks = $tasks->filter(fn (Task $task) =>  !($task->task_id !== null && $subTasksToRemove->find($task)));
+        $tasks = $tasks->filter(fn (Task $task) =>  !($task->task_id !== null && $subTasksToRemove->find($task)))->sortBy([
+            ['statusOrder', 'asc'],
+            function (Task $a, Task $b): int {
+                if ($a->due_at === null && $b->due_at === null) {
+                    return 0;
+                }
+                if ($a->due_at === null) {
+                    return 1;
+                }
+                if ($b->due_at === null) {
+                    return -1;
+                }
+                return $a->due_at <=> $b->due_at;
+            },
+            ['priorityOrder', 'asc'],
+            ['name', 'asc'],
+        ]);
 
         return Inertia::render('DashboardGrid', [
             'your_tasks' => TaskResource::collection(resource: $tasks),

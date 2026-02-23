@@ -4,13 +4,12 @@ namespace App\Actions;
 
 use App\Enums\TaskPriority;
 use App\Enums\TaskProgress;
-use App\Http\Resources\TaskResource;
 use App\Models\Task;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-class CreatePersonalTask
+class CreateTask
 {
     public function __invoke(Request $request): RedirectResponse
     {
