@@ -62,7 +62,7 @@ function onUpdatedTasks(results) {
   pagesStore.setTasks(results.props.your_tasks);
 }
 
-function onEditParentTask(taskId) {
+function onChangeTask(taskId) {
   let foundTask = pagesStore.findTaskInGrid(taskId);
   if (foundTask) {
     let foundParent = pagesStore.findTaskInGrid(foundTask.task_id);
@@ -116,6 +116,6 @@ function onEditParentTask(taskId) {
         </button>
       </div>
     </div>
-    <TaskModal :page="currentURL" @updated-tasks="onUpdatedTasks" @load-task="onEditParentTask" />
+    <TaskModal :page="currentURL" @updated-tasks="onUpdatedTasks" @load-task="onChangeTask" />
   </AppLayout>
 </template>

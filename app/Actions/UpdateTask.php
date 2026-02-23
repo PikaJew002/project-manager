@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-class UpdatePersonalTask
+class UpdateTask
 {
     public function __invoke(Request $request, int $id): RedirectResponse
     {

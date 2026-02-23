@@ -11,6 +11,7 @@ let form = useForm({
   password: '',
   password_confirmation: '',
   organization_name: '',
+  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 });
 
 let selectedRegistrationType = ref(null);

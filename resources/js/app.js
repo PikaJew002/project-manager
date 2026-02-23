@@ -2,10 +2,18 @@ import "./bootstrap.js";
 import "../css/app.css";
 import { createApp, h } from "vue";
 import { ZiggyVue } from "ziggy-js";
-import { createInertiaApp } from "@inertiajs/vue3";
+import { createInertiaApp, router } from '@inertiajs/vue3';
 import { createPinia } from "pinia";
 
 let pinia = createPinia();
+
+router.on('before', (event) => {
+  console.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  event.detail.visit.headers = {
+    ...event.detail.visit.headers,
+    'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
+  };
+});
 
 createInertiaApp({
   resolve: (name) => {

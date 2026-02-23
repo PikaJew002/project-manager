@@ -25,6 +25,7 @@ let form = useForm({
   password: '',
   password_confirmation: '',
   token: props.token,
+  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 });
 
 let formDecline = useForm({

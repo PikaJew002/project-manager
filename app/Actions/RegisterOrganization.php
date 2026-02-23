@@ -21,6 +21,7 @@ class RegisterOrganization
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Password::defaults()],
             'organization_name' => ['required', 'string', 'max:255'],
+            'timezone' => ['nullable', 'string', 'max:255'],
         ]);
 
         $organization = Organization::create([
@@ -35,6 +36,7 @@ class RegisterOrganization
             'is_admin' => true,
             'email' => $fields['email'],
             'password' => Hash::make($fields['password']),
+            'timezone' => $fields['timezone'] ?? null,
         ]);
 
         Project::create([

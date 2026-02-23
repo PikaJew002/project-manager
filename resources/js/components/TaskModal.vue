@@ -166,6 +166,8 @@ function onNewTaskSubmit() {
     emit('updatedTasks', results);
     addTaskMode.value = false;
 
+    console.log('onNewTaskSubmit', results.props.task);
+
     if (results.props.task) {
       tasks.value.push(results.props.task);
     }
@@ -183,8 +185,9 @@ function onEditSubTask(subTask) {
   open.value = false;
   setTimeout(() => {
     emit('loadTask', subTask.id);
-    // store.setTask(subTask);
-    open.value = true;
+    nextTick(() => {
+      open.value = true;
+    });
   }, 750);
 }
 

@@ -3,8 +3,8 @@
 use App\Actions\AcceptInvite;
 use App\Actions\CreateBucket;
 use App\Actions\CreateInvite;
-use App\Actions\CreatePersonalTask;
 use App\Actions\CreateProject;
+use App\Actions\CreateTask;
 use App\Actions\DeclineInvite;
 use App\Actions\DeleteBucket;
 use App\Actions\DeleteTask;
@@ -13,7 +13,7 @@ use App\Actions\Logout;
 use App\Actions\RegisterOrganization as RegisterOrganizationAction;
 use App\Actions\ResetInvite;
 use App\Actions\UpdateBucket;
-use App\Actions\UpdatePersonalTask;
+use App\Actions\UpdateTask;
 use App\Http\Pages\DashboardBoard;
 use App\Http\Pages\DashboardGrid;
 use App\Http\Pages\Organization;
@@ -22,6 +22,7 @@ use App\Http\Pages\ProjectGrid;
 use App\Http\Pages\RegisterFromInvite;
 use App\Http\Pages\RegisterOrganization;
 use App\Http\Pages\Welcome;
+use App\Http\Middleware\SetUserTimezone;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -38,7 +39,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/invite/reset', ResetInvite::class)->name('invite-reset');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', SetUserTimezone::class])->group(function () {
     // pages
     Route::get('/dashboard/grid', DashboardGrid::class)->name('dashboard-grid');
     Route::get('/dashboard/board', DashboardBoard::class)->name('dashboard-board');
@@ -49,8 +50,8 @@ Route::middleware('auth')->group(function () {
     // api
     Route::post('/logout', Logout::class)->name('logout');
 
-    Route::post('/task', CreatePersonalTask::class)->name('create-task');
-    Route::put('/task/{id}', UpdatePersonalTask::class)->name('update-task');
+    Route::post('/task', CreateTask::class)->name('create-task');
+    Route::put('/task/{id}', UpdateTask::class)->name('update-task');
     Route::delete('/task/{id}', DeleteTask::class)->name('delete-task');
 
     Route::post('/bucket', CreateBucket::class)->name('create-bucket');
