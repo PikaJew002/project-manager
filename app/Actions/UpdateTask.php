@@ -29,7 +29,7 @@ class UpdateTask
             'assigned_to.*' => ['integer', Rule::exists('users', 'id')],
         ]);
 
-        $task->updateFrom($fields, $request->user());
+        $task->updateFrom($fields, $request->user(), $request->header('X-Timezone'));
 
         return response()->redirectTo($request->header('X-From'));
     }

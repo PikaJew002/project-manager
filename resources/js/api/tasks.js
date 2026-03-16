@@ -7,7 +7,11 @@ async function getTasks() {
 }
 
 async function postTask(task) {
-    return await http.post(apiUrl, task);
+    return await http.post(apiUrl, task, {
+        headers: {
+            'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
+    });
 }
 
 export { getTasks, postTask, apiUrl };

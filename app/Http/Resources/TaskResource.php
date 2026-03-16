@@ -15,13 +15,15 @@ class TaskResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $timezone = $request->header('X-Timezone') ?? $request->user()->timezone ?? config('app.timezone');
+
         return [
             'id' => $this->id,
             'task_id' => $this->task_id,
             'task' => new TaskResource($this->whenLoaded('task')),
             'name' => $this->name,
             'description' => $this->description,
-            'due_at' => $this->due_at?->tz(config('app.user_timezone', config('app.timezone')))?->format('Y-m-d\TH:i:s'),
+            'due_at' => $this->due_at?->tz($timezone)?->format('Y-m-d\TH:i:s'),
             'status' => TaskProgress::getState($this->resource),
             'status_order' => $this->statusOrder,
             'priority' => $this->priority,

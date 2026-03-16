@@ -22,7 +22,6 @@ use App\Http\Pages\ProjectGrid;
 use App\Http\Pages\RegisterFromInvite;
 use App\Http\Pages\RegisterOrganization;
 use App\Http\Pages\Welcome;
-use App\Http\Middleware\SetUserTimezone;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -39,7 +38,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/invite/reset', ResetInvite::class)->name('invite-reset');
 });
 
-Route::middleware(['auth', SetUserTimezone::class])->group(function () {
+Route::middleware('auth')->group(function () {
     // pages
     Route::get('/dashboard/grid', DashboardGrid::class)->name('dashboard-grid');
     Route::get('/dashboard/board', DashboardBoard::class)->name('dashboard-board');

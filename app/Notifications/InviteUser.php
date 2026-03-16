@@ -40,7 +40,7 @@ class InviteUser extends Notification implements ShouldQueue
                     ->subject("You've been invited to a Project Manager Organization {$this->invite->organization->name}")
                     ->line("You've been invited to {$this->invite->organization->name} by {$this->invite->invitedBy->first_name} {$this->invite->invitedBy->last_name}!")
                     ->action('Respond To Invite', route('register-invite', $this->invite->token))
-                    ->line("P.S.: If you don't respond to an invite (accept or decline), you can't be invited to another organization in Project Manager.");
+                    ->line("P.S.: If you don't respond to an invite (accept or decline), you can't be invited to another organization in " . config('app.name') . ".");
     }
 
     /**

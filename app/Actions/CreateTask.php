@@ -28,7 +28,7 @@ class CreateTask
             'assigned_to.*' => ['integer', Rule::exists('users', 'id')],
         ]);
 
-        Task::createFrom($fields, $request->user());
+        Task::createFrom($fields, $request->user(), $request->header('X-Timezone'));
 
         return response()->redirectTo($request->header('X-From'));
     }
