@@ -14,6 +14,8 @@ class InviteResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $timezone = $request->header('X-Timezone') ?? $request->user()->timezone ?? config('app.timezone');
+
         return [
             'id' => $this->id,
             'organization_id' => $this->organization_id,
@@ -22,8 +24,8 @@ class InviteResource extends JsonResource
             'invitedBy' => new UserResource($this->whenLoaded('invitedBy')),
             'email' => $this->email,
             'token' => $this->token,
-            'declined_at' => $this->declined_at?->tz(config('app.user_timezone', config('app.timezone'))),
-            'created_at' => $this->created_at?->tz(config('app.user_timezone', config('app.timezone'))),
+            'declined_at' => $this->declined_at?->tz($timezone),
+            'created_at' => $this->created_at?->tz($timezone),
         ];
     }
 }

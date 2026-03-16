@@ -6,6 +6,7 @@ use App\Enums\TaskPriority;
 use App\Enums\TaskProgress;
 use App\Enums\TaskPriorityOrder;
 use App\Enums\TaskProgressOrder;
+use App\Notifications\TaskAssigned;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -18,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class Task extends Model
 {
@@ -83,7 +85,7 @@ class Task extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withPivot('assigned_by')->withTimestamps();
+        return $this->belongsToMany(User::class)->withPivot('assigned_by', 'notified_at')->withTimestamps();
     }
 
     public function projects(): BelongsToMany
@@ -144,17 +146,18 @@ class Task extends Model
         })->get();
     }
 
-    public static function createFrom(array $fields, User $user): static
+    public static function createFrom(array $fields, User $user, ?string $timezone = null): static
     {
         $userId = $user->id;
+        $timezone = $timezone ?? $user->timezone ?? config('app.timezone');
 
         [$startedAt, $completedAt] = TaskProgress::stateInitial($fields['status'] ?? TaskProgress::DEFAULT);
 
-        if (array_key_exists('due_at', $fields)) {
+        if (!empty($fields['due_at'])) {
             $dueAt = Carbon::createFromFormat(
                 'Y-m-d\TH:i',
                 $fields['due_at'],
-                config('app.user_timezone', config('app.timezone'))
+                $timezone
             )->tz(config('app.timezone'));
         } else {
             $dueAt = null;
@@ -175,6 +178,8 @@ class Task extends Model
 
         if ($assignedTo->isNotEmpty()) {
             $task->users()->attach(id: $assignedTo->mapWithKeys(fn (int $id) => [$id => ['assigned_by' => $userId]]));
+            $assignedToUsers = User::whereIn('id', $assignedTo)->get();
+            Notification::send($assignedToUsers, new TaskAssigned($task));
         }
 
         $bucketIds = collect($fields['buckets'] ?? []);
@@ -193,48 +198,58 @@ class Task extends Model
         return $task;
     }
 
-    public function updateFrom(array $fields, User $user): static
+    public function updateFrom(array $fields, User $user, ?string $timezone = null): static
     {
         $userId = $user->id;
+        $timezone = $timezone ?? $user->timezone ?? config('app.timezone');
 
         $toUpdate = [];
 
-        if (array_key_exists('name', $fields)) {
+        if (!empty($fields['name'])) {
             $toUpdate['name'] = $fields['name'];
         }
-        if (array_key_exists('description', $fields)) {
+        if (!empty($fields['description'])) {
             $toUpdate['description'] = $fields['description'];
         }
-        if (array_key_exists('due_at', $fields)) {
+        if (!empty($fields['due_at'])) {
             $toUpdate['due_at'] = Carbon::createFromFormat(
                 'Y-m-d\TH:i',
                 $fields['due_at'],
-                config('app.user_timezone', config('app.timezone'))
+                $timezone
             )->tz(config('app.timezone'));
         }
-        if (array_key_exists('name', $fields)) {
+        if (!empty($fields['priority'])) {
             $toUpdate['priority'] = $fields['priority'];
         }
-        if (array_key_exists('status', $fields)) {
-            [$startedAt, $completedAt] = TaskProgress::stateChange($this, $this->status, TaskProgress::tryFrom($fields['status'] ?? TaskProgress::DEFAULT ));
+        if (!empty($fields['status'])) {
+            [$startedAt, $completedAt] = TaskProgress::stateChange($this, $this->status, TaskProgress::tryFrom($fields['status'] ?? TaskProgress::DEFAULT));
             $toUpdate['started_at'] = $startedAt;
             $toUpdate['completed_at'] = $completedAt;
         }
 
         $this->update($toUpdate);
 
-        if (array_key_exists('assigned_to', $fields)) {
+        if (!empty($fields['assigned_to'])) {
             $assignedTo = collect($fields['assigned_to'] ?? []);
             $currentUsers = $this->users->pluck('id');
 
             // attach users not found on the current model, but are in the request
-            $this->users()->attach($assignedTo->diff($currentUsers)->values()->mapWithKeys(fn (int $id) => [$id => ['assigned_by' => $userId]]));
+            $assignedToDiff = $assignedTo->diff($currentUsers)->values();
+            if ($assignedToDiff->isNotEmpty()) {
+                $this->users()->attach($assignedToDiff->mapWithKeys(fn(int $id) => [$id => ['assigned_by' => $userId]]));
+
+                $assignedToUsers = User::whereIn('id', $assignedToDiff)->get();
+                Notification::send($assignedToUsers, new TaskAssigned($this));
+            }
 
             // detach users not found in the request, but are on the current model
-            $this->users()->detach($currentUsers->diff($assignedTo)->values());
+            $currentUsersToDiff = $currentUsers->diff($assignedTo)->values();
+            if ($currentUsersToDiff->isNotEmpty()) {
+                $this->users()->detach($currentUsersToDiff);
+            }
         }
 
-        if (array_key_exists('buckets', $fields) && array_key_exists('projects', $fields)) {
+        if (!empty($fields['buckets']) && !empty($fields['projects'])) {
             $bucketIds = collect($fields['buckets']);
             $projectIds = $this->normalizeProjects(collect($fields['projects']), $bucketIds);
 

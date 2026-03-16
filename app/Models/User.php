@@ -89,7 +89,7 @@ class User extends Authenticatable
 
     public function tasks(): BelongsToMany
     {
-        return $this->belongsToMany(Task::class)->withPivot('assigned_by')->withTimestamps();
+        return $this->belongsToMany(Task::class)->withPivot('assigned_by', 'notified_at')->withTimestamps();
     }
 
     public function scopeYourUsers(Builder $query, User $user): void

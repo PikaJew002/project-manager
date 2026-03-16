@@ -130,6 +130,7 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
     form.post(route('create-task'), {
       headers: {
         'X-From': page,
+        'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
       preserveState: true,
       preserveScroll: true,
@@ -147,6 +148,7 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
     subTaskForm.post(route('create-task'), {
       headers: {
         'X-From': page,
+        'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
       preserveState: true,
       preserveScroll: true,
@@ -170,6 +172,7 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
     subTaskUpdateForm.put(route('update-task', subTaskId), {
       headers: {
         'X-From': page,
+        'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
       preserveState: true,
       preserveScroll: true,
@@ -186,6 +189,7 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
     form.put(route('update-task', id.value), {
       headers: {
         'X-From': page,
+        'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
       preserveState: true,
       preserveScroll: true,
@@ -201,6 +205,7 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
     form.delete(route('delete-task', id.value), {
       headers: {
         'X-From': page,
+        'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
       preserveState: true,
       preserveScroll: true,
