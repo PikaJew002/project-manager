@@ -23,7 +23,7 @@ class TaskResource extends JsonResource
             'task' => new TaskResource($this->whenLoaded('task')),
             'name' => $this->name,
             'description' => $this->description,
-            'due_at' => $this->due_at?->tz($timezone)?->format('Y-m-d\TH:i:s'),
+            'due_at' => $this->due_at?->tz($timezone)?->format('Y-m-d\TH:i'),
             'status' => TaskProgress::getState($this->resource),
             'status_order' => $this->statusOrder,
             'priority' => $this->priority,
