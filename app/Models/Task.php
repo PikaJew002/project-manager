@@ -178,7 +178,7 @@ class Task extends Model
 
         if ($assignedTo->isNotEmpty()) {
             $task->users()->attach(id: $assignedTo->mapWithKeys(fn (int $id) => [$id => ['assigned_by' => $userId]]));
-            $assignedToUsers = User::whereIn('id', $assignedTo)->get();
+            $assignedToUsers = User::whereIn('id', $assignedTo->filter(fn (int $id) => $id !== $userId))->get();
             Notification::send($assignedToUsers, new TaskAssigned($task));
         }
 
@@ -238,7 +238,7 @@ class Task extends Model
             if ($assignedToDiff->isNotEmpty()) {
                 $this->users()->attach($assignedToDiff->mapWithKeys(fn(int $id) => [$id => ['assigned_by' => $userId]]));
 
-                $assignedToUsers = User::whereIn('id', $assignedToDiff)->get();
+                $assignedToUsers = User::whereIn('id', $assignedToDiff->filter(fn (int $id) => $id !== $userId))->get();
                 Notification::send($assignedToUsers, new TaskAssigned($this));
             }
 
