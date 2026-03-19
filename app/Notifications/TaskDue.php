@@ -19,7 +19,7 @@ class TaskDue extends Notification implements ShouldQueue
     public function __construct(
         public Task $task
     ) {
-        $this->task->loadMissing(['project', 'createdBy', 'users']);
+        $this->task->loadMissing(['createdBy', 'users']);
     }
 
     /**
@@ -47,8 +47,8 @@ class TaskDue extends Notification implements ShouldQueue
                     ->when($this->task->description, function (MailMessage $message) {
                         $message->line("Description:")->line($this->task->description);
                     })
-                    ->action('View Project Board', route('project-board', $this->task->project->id))
-                    ->action('View Project Grid', route('project-grid', $this->task->project->id))
+                    ->action('View Your Tasks Board', route('dashboard-board'))
+                    ->action('View Your Tasks Grid', route('dashboard-grid'))
                     ->line("Created By: {$this->task->createdBy->first_name} {$this->task->createdBy->last_name}")
                     ->line("Assigned By: {$assignedBy?->first_name} {$assignedBy?->last_name}")
                     ->line("Assigned To: " . $this->task->users->map(fn (User $user) => "{$user->first_name} {$user->last_name}")->implode(', '))
