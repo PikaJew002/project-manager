@@ -17,7 +17,6 @@ class DashboardBoard
 {
     public function __invoke(Request $request): Response
     {
-        $groupedBy = $request->query('grouped_by', 'bucket');
         $user = $request->user();
         $projects = Project::with([
             'tasks' => function (BelongsToMany $query) use ($user) {
