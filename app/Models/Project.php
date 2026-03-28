@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -51,7 +51,19 @@ class Project extends Model
 
     public function tasks(): BelongsToMany
     {
-        return $this->belongsToMany(Task::class)->withTimestamps();
+        return $this->belongsToMany(Task::class)->withTimestamps()->orderByRaw('(completed_at IS NOT NULL) ASC')
+            ->orderByRaw('(started_at IS NOT NULL) ASC')
+            ->orderByRaw('(due_at IS NULL) ASC')
+            ->orderBy('due_at')
+            ->orderByRaw("
+                CASE priority
+                    WHEN 'Urgent' THEN 1
+                    WHEN 'Important' THEN 2
+                    WHEN 'Medium' THEN 3
+                    WHEN 'Low' THEN 4
+                END
+            ")
+            ->orderBy('name');
     }
 
     public function users(): BelongsToMany

@@ -5,7 +5,7 @@ namespace App\Http\Pages;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
 use App\Models\Task;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -36,25 +36,7 @@ class ProjectGrid
                 ->orWhereHas('buckets', function (Builder $query) use ($project) {
                     $query->where('project_id', $project->id);
                 });
-        })->get();
-
-        $tasks = $tasks->sortBy([
-            ['statusOrder', 'asc'],
-            function (Task $a, Task $b): int {
-                if ($a->due_at === null && $b->due_at === null) {
-                    return 0;
-                }
-                if ($a->due_at === null) {
-                    return 1;
-                }
-                if ($b->due_at === null) {
-                    return -1;
-                }
-                return $a->due_at <=> $b->due_at;
-            },
-            ['priorityOrder', 'asc'],
-            ['name', 'asc'],
-        ]);
+        })->ordered()->get();
 
         return Inertia::render('ProjectGrid', [
             'project' => $project,

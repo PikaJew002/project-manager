@@ -3,6 +3,7 @@
 use App\Actions\AcceptInvite;
 use App\Actions\CreateBucket;
 use App\Actions\CreateInvite;
+use App\Actions\CreateSubtask;
 use App\Actions\CreateProject;
 use App\Actions\CreateTask;
 use App\Actions\DeclineInvite;
@@ -13,6 +14,7 @@ use App\Actions\Logout;
 use App\Actions\RegisterOrganization as RegisterOrganizationAction;
 use App\Actions\ResetInvite;
 use App\Actions\UpdateBucket;
+use App\Actions\UpdateSubtask;
 use App\Actions\UpdateTask;
 use App\Http\Pages\DashboardBoard;
 use App\Http\Pages\DashboardGrid;
@@ -52,6 +54,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/task', CreateTask::class)->name('create-task');
     Route::put('/task/{id}', UpdateTask::class)->name('update-task');
     Route::delete('/task/{id}', DeleteTask::class)->name('delete-task');
+
+    Route::post('/subtask', CreateSubtask::class)->name('create-subtask');
+    Route::put('/subtask/{id}', UpdateSubtask::class)->name('update-subtask');
 
     Route::post('/bucket', CreateBucket::class)->name('create-bucket');
     Route::put('/bucket/{id}', UpdateBucket::class)->name('update-bucket');
