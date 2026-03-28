@@ -36,25 +36,7 @@ class ProjectGrid
                 ->orWhereHas('buckets', function (Builder $query) use ($project) {
                     $query->where('project_id', $project->id);
                 });
-        })->get();
-
-        $tasks = $tasks->sortBy([
-            ['statusOrder', 'asc'],
-            function (Task $a, Task $b): int {
-                if ($a->due_at === null && $b->due_at === null) {
-                    return 0;
-                }
-                if ($a->due_at === null) {
-                    return 1;
-                }
-                if ($b->due_at === null) {
-                    return -1;
-                }
-                return $a->due_at <=> $b->due_at;
-            },
-            ['priorityOrder', 'asc'],
-            ['name', 'asc'],
-        ]);
+        })->ordered()->get();
 
         return Inertia::render('ProjectGrid', [
             'project' => $project,

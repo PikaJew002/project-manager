@@ -162,14 +162,17 @@ function onClickNewTask() {
 }
 
 function onNewTaskSubmit() {
-  store.onSubTaskFormSubmitCreate(newTaskName.value, props.page, function (results) {
-    emit('updatedTasks', results);
+  if (newTaskName.value !== '') {
+    store.onSubTaskFormSubmitCreate(newTaskName.value, props.page, function (results) {
+      emit('updatedTasks', results);
+      addTaskMode.value = false;
+      tasks.value = results.flash.subtasks;
+      newTaskName.value = '';
+    });
+  } else {
     addTaskMode.value = false;
-
-    if (results.props.task) {
-      tasks.value.push(results.props.task);
-    }
-  });
+    newTaskName.value = '';
+  }
 }
 
 function handleEscape() {
@@ -192,12 +195,7 @@ function onEditSubTask(subTask) {
 function updateSubTaskStatus(subTaskId, newStatus) {
   store.onSubTaskFormSubmitUpdateStatus(subTaskId, newStatus, props.page, function (results) {
     emit('updatedTasks', results);
-    tasks.value = tasks.value.map((t) => {
-      if (t.id === subTaskId) {
-        t.status = newStatus;
-      }
-      return t;
-    });
+    tasks.value = results.flash.subtasks;
   });
 }
 

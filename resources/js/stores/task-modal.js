@@ -145,16 +145,16 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
   function onSubTaskFormSubmitCreate(newName, page, onFinish, onError) {
     subTaskForm.task_id = id.value;
     subTaskForm.name = newName;
-    subTaskForm.post(route('create-task'), {
+    subTaskForm.post(route('create-subtask'), {
       headers: {
         'X-From': page,
         'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
       preserveState: true,
       preserveScroll: true,
-      onSuccess: (page) => {
+      onSuccess: (pageObj) => {
         subTaskForm.reset();
-        onFinish(page);
+        onFinish(pageObj);
       },
       onError,
     });
@@ -169,16 +169,16 @@ export const useTaskModalStore = defineStore('task-modal-store', () => {
   ) {
     subTaskUpdateForm.status = newStatus;
 
-    subTaskUpdateForm.put(route('update-task', subTaskId), {
+    subTaskUpdateForm.put(route('update-subtask', subTaskId), {
       headers: {
         'X-From': page,
         'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
       preserveState: true,
       preserveScroll: true,
-      onSuccess: (page) => {
+      onSuccess: (pageObj) => {
         subTaskUpdateForm.reset();
-        onFinish(page);
+        onFinish(pageObj);
       },
       onError,
     });

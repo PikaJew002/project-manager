@@ -69,7 +69,8 @@ class DashboardBoard
             })->orWhereHas('buckets', function (Builder $query) use ($user) {
                 $query->yourBuckets($user);
             });
-        })->get();
+        })
+        ->ordered()->get();
 
         // grouped as: bucket, project
 

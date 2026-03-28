@@ -30,7 +30,9 @@ class DashboardGrid
                 $query->with('buckets')->whereRaw("`projects`.`id` in ({$projectsString})");
             },
             'tasks' => function () {},
-        ])->whereRelation('users', DB::raw('`users`.`id`'), $user->id)->get();
+        ])
+        ->whereRelation('users', DB::raw('`users`.`id`'), $user->id)
+        ->ordered()->get();
 
         $subTasks = $tasks->filter(fn(Task $task) => $task->task_id !== null);
 
@@ -45,23 +47,7 @@ class DashboardGrid
             return false;
         });
 
-        $tasks = $tasks->filter(fn (Task $task) =>  !($task->task_id !== null && $subTasksToRemove->find($task)))->sortBy([
-            ['statusOrder', 'asc'],
-            function (Task $a, Task $b): int {
-                if ($a->due_at === null && $b->due_at === null) {
-                    return 0;
-                }
-                if ($a->due_at === null) {
-                    return 1;
-                }
-                if ($b->due_at === null) {
-                    return -1;
-                }
-                return $a->due_at <=> $b->due_at;
-            },
-            ['priorityOrder', 'asc'],
-            ['name', 'asc'],
-        ]);
+        $tasks = $tasks->filter(fn (Task $task) =>  !($task->task_id !== null && $subTasksToRemove->find($task)));
 
         return Inertia::render('DashboardGrid', [
             'your_tasks' => TaskResource::collection(resource: $tasks),
