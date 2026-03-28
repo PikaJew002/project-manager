@@ -19,7 +19,7 @@ class TaskAssigned extends Notification implements ShouldQueue
     public function __construct(
         public Task $task
     ) {
-        $this->task->loadMissing(['project', 'createdBy', 'users']);
+        $this->task->loadMissing(['createdBy', 'users']);
     }
 
     /**
@@ -44,12 +44,12 @@ class TaskAssigned extends Notification implements ShouldQueue
         return (new MailMessage)
                 ->subject("Task Assigned: {$this->task->name}")
                 ->line("You have been assigned to the task {$this->task->name} by {$assignedBy?->first_name} {$assignedBy?->last_name}")
-            ->line("The task {$this->task->name} is due on {$this->task->due_at?->tz($notifiable->timezone ?? config('app.timezone'))?->format("M j, Y \\a\\t g:i A")}")
+                ->line("The task {$this->task->name} is due on {$this->task->due_at?->tz($notifiable->timezone ?? config('app.timezone'))?->format("M j, Y \\a\\t g:i A")}")
                 ->when($this->task->description, function (MailMessage $message) {
                     $message->line("Description:")->line($this->task->description);
                 })
-                ->action('View Project Board', route('project-board', $this->task->project->id))
-                ->action('View Project Grid', route('project-grid', $this->task->project->id))
+                ->action('View Your Tasks Board', route('dashboard-board'))
+                ->action('View Your Tasks Grid', route('dashboard-grid'))
                 ->line("Thank you for using " . config('app.name') . "!");
     }
 
