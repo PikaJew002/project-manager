@@ -79,27 +79,31 @@ function onClickNewBucket() {
 }
 
 function onNewBucketSubmit() {
-  form.name = newBucketName.value;
-  form.post(route('create-bucket'), {
-    headers: {
-      'X-From': currentURL,
-    },
-    preserveState: true,
-    preserveScroll: true,
-    onSuccess: (page) => {
-      pagesStore.setProject(props.project);
-      taskModalStore.setProjects(page.props.task_options?.your_projects);
-      taskModalStore.setBuckets(page.props.task_options?.your_buckets);
-      addBucketMode.value = false;
-      form.reset();
-    },
-    onError: (err) => {
-      console.log(err);
-      addBucketMode.value = false;
-      form.reset();
-      console.log('submitted error');
-    },
-  });
+  if (newBucketName.value !== '') {
+    form.name = newBucketName.value;
+    form.post(route('create-bucket'), {
+      headers: {
+        'X-From': currentURL,
+      },
+      preserveState: true,
+      preserveScroll: true,
+      onSuccess: (page) => {
+        pagesStore.setProject(props.project);
+        taskModalStore.setProjects(page.props.task_options?.your_projects);
+        taskModalStore.setBuckets(page.props.task_options?.your_buckets);
+        addBucketMode.value = false;
+        form.reset();
+      },
+      onError: (err) => {
+        console.log(err);
+        addBucketMode.value = false;
+        form.reset();
+      },
+    });
+  } else {
+    addBucketMode.value = false;
+    newBucketName.value = '';
+  }
 }
 
 function handleEscape() {

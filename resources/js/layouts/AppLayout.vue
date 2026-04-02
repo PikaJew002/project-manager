@@ -89,26 +89,32 @@ function onClickNewProject() {
 }
 
 function onNewProjectSubmit() {
-  form.name = newProjectName.value;
-  form.initials = newProjectInitials.value;
-  form.post(route('create-project'), {
-    headers: {
-      'X-From': currentURL,
-    },
-    preserveState: true,
-    preserveScroll: true,
-    onSuccess: (results) => {
-      taskModalStore.setProjects(results.props.task_options?.your_projects);
-      addProjectMode.value = false;
-      form.reset();
-    },
-    onError: (err) => {
-      console.log(err);
-      addProjectMode.value = false;
-      form.reset();
-      console.log('submitted error');
-    },
-  });
+  if (newProjectName.value !== '' && newProjectInitials.value !== '') {
+    form.name = newProjectName.value;
+    form.initials = newProjectInitials.value;
+    form.post(route('create-project'), {
+      headers: {
+        'X-From': currentURL,
+      },
+      preserveState: true,
+      preserveScroll: true,
+      onSuccess: (results) => {
+        taskModalStore.setProjects(results.props.task_options?.your_projects);
+        addProjectMode.value = false;
+        form.reset();
+      },
+      onError: (err) => {
+        console.log(err);
+        addProjectMode.value = false;
+        form.reset();
+        console.log('submitted error');
+      },
+    });
+  } else {
+    addProjectMode.value = false;
+    newProjectName.value = '';
+    newProjectInitials.value = '';
+  }
 }
 
 function handleEscape() {
