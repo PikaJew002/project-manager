@@ -4,8 +4,6 @@ namespace App\Models;
 
 use App\Enums\TaskPriority;
 use App\Enums\TaskProgress;
-use App\Enums\TaskPriorityOrder;
-use App\Enums\TaskProgressOrder;
 use App\Notifications\TaskAssigned;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -55,26 +53,6 @@ class Task extends Model
     {
         return Attribute::make(
             get: fn(mixed $value, array $attributes) => TaskProgress::getState($attributes),
-        );
-    }
-
-    /**
-     * Get the task status order.
-     */
-    protected function statusOrder(): Attribute
-    {
-        return Attribute::make(
-            get: fn(mixed $value, array $attributes) => TaskProgressOrder::getOrder(TaskProgress::getState($attributes))->value,
-        );
-    }
-
-    /**
-     * Get the task priority order.
-     */
-    protected function priorityOrder(): Attribute
-    {
-        return Attribute::make(
-            get: fn(mixed $value, array $attributes) => TaskPriorityOrder::getOrder(TaskPriority::tryFrom($attributes['priority']))->value,
         );
     }
 
