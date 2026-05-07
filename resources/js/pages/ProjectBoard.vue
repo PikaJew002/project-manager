@@ -108,6 +108,7 @@ function onNewBucketSubmit() {
 
 function handleEscape() {
   addBucketMode.value = false;
+  newBucketName.value = '';
   nextTick(() => {
     addBucketButton.value.focus();
   });
