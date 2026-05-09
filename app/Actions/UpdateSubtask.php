@@ -4,7 +4,6 @@ namespace App\Actions;
 
 use App\Enums\TaskPriority;
 use App\Enums\TaskProgress;
-use App\Http\Resources\TaskResource;
 use App\Models\Task;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -34,7 +33,7 @@ class UpdateSubtask
         $subtask->updateFrom($fields, $request->user(), $request->header('X-Timezone'));
 
         Inertia::flash([
-            'subtasks' => TaskResource::collection(Task::where('task_id', $subtask->task_id)->with('users', 'buckets', 'projects', 'tasks', 'createdBy', 'task')->ordered()->get()),
+            'task_id' => $subtask->task_id,
         ]);
 
         return response()->redirectTo($request->header('X-From'));
