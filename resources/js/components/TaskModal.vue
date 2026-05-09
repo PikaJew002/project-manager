@@ -166,7 +166,7 @@ function onNewTaskSubmit() {
     store.onSubTaskFormSubmitCreate(newTaskName.value, props.page, function (results) {
       emit('updatedTasks', results);
       addTaskMode.value = false;
-      tasks.value = results.flash.subtasks;
+      tasks.value = results.props.subtasks;
       newTaskName.value = '';
     });
   } else {
@@ -195,7 +195,7 @@ function onEditSubTask(subTask) {
 function updateSubTaskStatus(subTaskId, newStatus) {
   store.onSubTaskFormSubmitUpdateStatus(subTaskId, newStatus, props.page, function (results) {
     emit('updatedTasks', results);
-    tasks.value = results.flash.subtasks;
+    tasks.value = results.props.subtasks;
   });
 }
 

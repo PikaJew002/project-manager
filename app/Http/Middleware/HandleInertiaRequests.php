@@ -4,12 +4,15 @@ namespace App\Http\Middleware;
 
 use App\Http\Resources\BucketResource;
 use App\Http\Resources\ProjectResource;
+use App\Http\Resources\TaskResource;
 use App\Http\Resources\UserResource;
 use App\Models\Project;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -51,6 +54,8 @@ class HandleInertiaRequests extends Middleware
             ? User::with(['projects'])->where('organization_id', $request->user()->organization_id)->get()
             : collect();
 
+        $subtasks = $request->session()->get('inertia.flash_data.task_id') ? TaskResource::collection(Task::query()->where('task_id', $request->session()->get('inertia.flash_data.task_id'))->with('users', 'buckets', 'projects', 'tasks', 'createdBy', 'task')->ordered()->get()) : null;
+
         return [
             ...parent::share($request),
             ...$request->session()->get('inertia', []),
@@ -61,6 +66,7 @@ class HandleInertiaRequests extends Middleware
                 'your_buckets' => BucketResource::collection($yourBuckets),
                 'assignable_users' => UserResource::collection($users),
             ] : [],
+            'subtasks' => $subtasks,
             'auth' => [
                 'user' => $request->user(),
             ],
