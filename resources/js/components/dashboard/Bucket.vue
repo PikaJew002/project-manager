@@ -104,7 +104,7 @@ function onClickAddTask() {
       </div>
     </div>
     <!-- column content (tasks) -->
-    <div class="flex flex-col flex-nowrap grow shrink basis-auto min-h-0 min-w-0 overflow-hidden -mt-[9px] px-[13px]">
+    <div class="flex flex-col flex-nowrap grow shrink basis-auto min-h-0 min-w-0 overflow-x-hidden overflow-y-auto -mt-[9px] px-[13px]">
       <div v-if="tasks.length > 0" class="flex flex-col flex-nowrap grow-0 shrink-0 basis-auto min-w-0 min-h-[10px] pt-[13px]">
         <div class="min-w-0 min-h-0">
           <!-- list -->
