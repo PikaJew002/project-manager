@@ -16,7 +16,7 @@ class ResetInvite
                 'required',
                 'string',
                 function (string $attribute, mixed $value, Closure $fail) {
-                    if (Invite::where('token', Crypt::decryptString($value))->doesntExist()) {
+                    if (Invite::query()->where('token', Crypt::decryptString($value))->doesntExist()) {
                         $fail("The {$attribute} is invalid.");
                     }
                 },
@@ -25,7 +25,7 @@ class ResetInvite
 
         $token = Crypt::decryptString($fields['token']);
 
-        $invite = Invite::where('token', $token)->firstOrFail();
+        $invite = Invite::query()->where('token', $token)->firstOrFail();
 
         $invite->update([
             'declined_at' => null,

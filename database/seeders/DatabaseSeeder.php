@@ -27,6 +27,15 @@ class DatabaseSeeder extends Seeder
             'initials' => 'TU',
             'email' => 'test@example.com',
             'is_admin' => true,
+            'timezone' => 'America/New_York',
+            'settings' => [
+                'notifications' => [
+                    'daily_tasks_due' => true,
+                    'weekly_tasks_due' => true,
+                    'tasks_assigned' => true,
+                    'tasks_updated' => true,
+                ],
+            ],
         ]);
 
         $adminPersonalProject = Project::factory()->for($org)->create([
@@ -47,7 +56,16 @@ class DatabaseSeeder extends Seeder
                 ]),
                 'administering'
             )
-            ->create();
+            ->create([
+                'settings' => [
+                    'notifications' => [
+                        'daily_tasks_due' => true,
+                        'weekly_tasks_due' => true,
+                        'tasks_assigned' => true,
+                        'tasks_updated' => true,
+                    ],
+                ],
+            ]);
 
         $project = Project::factory()
             ->for($org)

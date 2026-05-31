@@ -42,7 +42,7 @@ class TaskDue extends Notification implements ShouldQueue
         })?->pivot?->assigned_by);
 
         return (new MailMessage)
-                    ->subject("Task Due: {$this->task->name}")
+                    ->subject("Task {$this->task->name} is Due Today")
                     ->line("The task {$this->task->name} is due on {$this->task->due_at?->tz($notifiable->timezone ?? config('app.timezone'))?->format("M j, Y \\a\\t g:i A")}")
                     ->when($this->task->description, function (MailMessage $message) {
                         $message->line("Description:")->line($this->task->description);

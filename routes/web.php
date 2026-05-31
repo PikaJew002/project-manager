@@ -14,6 +14,7 @@ use App\Actions\Logout;
 use App\Actions\RegisterOrganization as RegisterOrganizationAction;
 use App\Actions\ResetInvite;
 use App\Actions\UpdateBucket;
+use App\Actions\UpdateNotifications;
 use App\Actions\UpdateSubtask;
 use App\Actions\UpdateTask;
 use App\Http\Pages\DashboardBoard;
@@ -23,7 +24,11 @@ use App\Http\Pages\ProjectBoard;
 use App\Http\Pages\ProjectGrid;
 use App\Http\Pages\RegisterFromInvite;
 use App\Http\Pages\RegisterOrganization;
+use App\Http\Pages\Settings\Account as AccountSettings;
+use App\Http\Pages\Settings\Notifications as NotificationsSettings;
+use App\Http\Pages\VerifyNotice;
 use App\Http\Pages\Welcome;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -41,30 +46,47 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    // pages
-    Route::get('/dashboard/grid', DashboardGrid::class)->name('dashboard-grid');
-    Route::get('/dashboard/board', DashboardBoard::class)->name('dashboard-board');
-    Route::get('/project/{id}/grid', ProjectGrid::class)->name('project-grid');
-    Route::get('/project/{id}/board', ProjectBoard::class)->name('project-board');
-    Route::get('/organization', Organization::class)->name('organization');
+    // verify notice page
+    Route::get('/email/verify', VerifyNotice::class)->name('verification.notice');
 
-    // api
-    Route::post('/logout', Logout::class)->name('logout');
+    // resend verification email
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
 
-    Route::post('/task', CreateTask::class)->name('create-task');
-    Route::put('/task/{id}', UpdateTask::class)->name('update-task');
-    Route::delete('/task/{id}', DeleteTask::class)->name('delete-task');
+        return back()->with('message', 'Verification link sent!');
+    })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-    Route::post('/subtask', CreateSubtask::class)->name('create-subtask');
-    Route::put('/subtask/{id}', UpdateSubtask::class)->name('update-subtask');
+    Route::middleware('verified')->group(function () {
+        // pages
+        Route::get('/dashboard/grid', DashboardGrid::class)->name('dashboard-grid');
+        Route::get('/dashboard/board', DashboardBoard::class)->name('dashboard-board');
+        Route::get('/project/{id}/grid', ProjectGrid::class)->name('project-grid');
+        Route::get('/project/{id}/board', ProjectBoard::class)->name('project-board');
+        Route::get('/organization', Organization::class)->name('organization');
 
-    Route::post('/bucket', CreateBucket::class)->name('create-bucket');
-    Route::put('/bucket/{id}', UpdateBucket::class)->name('update-bucket');
-    Route::delete('/bucket/{id}', DeleteBucket::class)->name('delete-bucket');
+        Route::get('/settings/account', AccountSettings::class)->name('settings.account');
+        Route::get('/settings/notifications', NotificationsSettings::class)->name('settings.notifications');
 
-    Route::post('/project', CreateProject::class)->name('create-project');
+        // api
+        Route::post('/logout', Logout::class)->name('logout');
 
-    Route::post('/invite', CreateInvite::class)->name('create-invite');
+        Route::post('/settings/notifications', UpdateNotifications::class)->name('update-notifications');
 
-    Route::redirect('/dashboard', '/dashboard/grid');
+        Route::post('/task', CreateTask::class)->name('create-task');
+        Route::put('/task/{id}', UpdateTask::class)->name('update-task');
+        Route::delete('/task/{id}', DeleteTask::class)->name('delete-task');
+
+        Route::post('/subtask', CreateSubtask::class)->name('create-subtask');
+        Route::put('/subtask/{id}', UpdateSubtask::class)->name('update-subtask');
+
+        Route::post('/bucket', CreateBucket::class)->name('create-bucket');
+        Route::put('/bucket/{id}', UpdateBucket::class)->name('update-bucket');
+        Route::delete('/bucket/{id}', DeleteBucket::class)->name('delete-bucket');
+
+        Route::post('/project', CreateProject::class)->name('create-project');
+
+        Route::post('/invite', CreateInvite::class)->name('create-invite');
+
+        Route::redirect('/dashboard', '/dashboard/grid');
+    });
 });

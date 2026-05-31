@@ -5,12 +5,10 @@ namespace App\Http\Pages;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class Welcome
+class VerifyNotice
 {
     public function __invoke(): Response
     {
-        return Inertia::render('Welcome', [
-            'message' => session('message'),
-        ]);
+        return Inertia::render('VerifyNotice');
     }
 }

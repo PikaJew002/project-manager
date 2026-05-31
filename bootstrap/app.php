@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Sentry\Laravel\Integration;
+use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -24,17 +26,17 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command('model:prune')->daily();
+        // Notify users of tasks that are due today at precisely 8:00 AM in their timezone
         $schedule->call(function () {
             $users = User::with(['tasks' => function (BelongsToMany $query) {
-                $query->whereNull('completed_at')->whereNotNull('due_at')->whereBetween('due_at', [now()->subHours(8)->setMinutes(0)->setSeconds(0), now()->addHours(16)->setMinutes(0)->setSeconds(0)])->wherePivotNull('notified_at');
-            }])->get()->filter(function (User $user) {
-                $tz = new DateTimeZone($user->timezone ?? config('app.timezone'));
-                $now = new DateTime('now', $tz);
-
-                if ((int) $now->format('H') === 8 && (int) $now->format('i') === 0) {
-                    return true;
-                }
-                return false;
+                $query->whereNull('completed_at')
+                    ->whereNotNull('due_at')
+                    ->whereBetween('due_at', [
+                        now()->subHours(8)->setMinutes(0)->setSeconds(0),
+                        now()->addHours(16)->setMinutes(0)->setSeconds(0),
+                    ])->wherePivotNull('notified_at');
+            }])->where('settings->notifications->daily_tasks_due', true)->get()->filter(function (User $user) {
+                return $user->is8AMInTimezone();
             })->filter(function (User $user) {
                 return $user->tasks->isNotEmpty();
             });
@@ -49,5 +51,12 @@ return Application::configure(basePath: dirname(__DIR__))
         })->hourly();
     })
     ->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->respond(function (Response $response, Throwable $exception, Request $request) {
+            if ($response->getStatusCode() === 419) {
+                return back()->withInput(['message' => 'Session expired. Please login again.'])->redirectToRoute('welcome');
+            }
+
+            return $response;
+        });
         Integration::handles($exceptions);
     })->create();

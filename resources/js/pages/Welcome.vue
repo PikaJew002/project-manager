@@ -1,6 +1,8 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import AuthLayout from '../layouts/AuthLayout.vue';
+
+let page = usePage();
 
 let form = useForm({
   email: '',
@@ -19,6 +21,13 @@ function submit() {
   <Head title="Login" />
   <AuthLayout>
     <form @submit.prevent="submit" class="flex flex-col gap-6">
+      <div v-if="page.props.message" class="grid gap-6">
+        <div class="grid gap-2">
+          <p class="text-sm text-red-600 dark:text-red-500">
+            {{ page.props.message }}
+          </p>
+        </div>
+      </div>
       <div class="grid gap-6">
         <div class="grid gap-2">
           <label
