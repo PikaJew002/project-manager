@@ -9,10 +9,10 @@ use App\Http\Resources\UserResource;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -45,12 +45,12 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $yourProjects = auth()->check() ? Project::with('buckets.project')->yourProjects($request->user())->get() : collect();
-        $adminNavProjects = auth()->check() ? ($request->user()->is_admin ? Project::where('organization_id', $request->user()->organization_id)->whereNot(function (Builder $query) use ($request) {
+        $yourProjects = Auth::check() ? Project::with('buckets.project')->yourProjects($request->user())->get() : collect();
+        $adminNavProjects = Auth::check() ? ($request->user()->is_admin ? Project::query()->where('organization_id', $request->user()->organization_id)->whereNot(function (Builder $query) use ($request) {
             $query->yourProjects($request->user());
         })->where('is_personal', false)->get() : collect()) : collect();
         $yourBuckets = $yourProjects->map(fn(Project $project): Collection => $project->buckets)->flatten();
-        $users = auth()->check()
+        $users = Auth::check()
             ? User::with(['projects'])->where('organization_id', $request->user()->organization_id)->get()
             : collect();
 
@@ -61,7 +61,7 @@ class HandleInertiaRequests extends Middleware
             ...$request->session()->get('inertia', []),
             'nav_projects' => $yourProjects,
             'admin_nav_projects' => $adminNavProjects,
-            'task_options' => auth()->check() ? [
+            'task_options' => Auth::check() ? [
                 'your_projects' => ProjectResource::collection($yourProjects),
                 'your_buckets' => BucketResource::collection($yourBuckets),
                 'assignable_users' => UserResource::collection($users),

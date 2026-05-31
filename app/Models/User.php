@@ -2,18 +2,23 @@
 
 namespace App\Models;
 
+use DateTimeZone;
+use DateTime;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The relationships that should always be loaded.
@@ -36,6 +41,7 @@ class User extends Authenticatable
         'email',
         'password',
         'timezone',
+        'settings',
     ];
 
     /**
@@ -59,6 +65,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
+            'settings' => AsArrayObject::class,
         ];
     }
 
@@ -109,5 +116,13 @@ class User extends Authenticatable
         $query->whereHas('projects', function (Builder $query) use ($user) {
             $query->yourProjects($user);
         });
+    }
+
+    public function is8AMInTimezone(): bool
+    {
+        $tz = new DateTimeZone($this->timezone ?? config('app.timezone'));
+        $now = new DateTime('now', $tz);
+
+        return (int) $now->format('H') === 8 && (int) $now->format('i') === 0;
     }
 }

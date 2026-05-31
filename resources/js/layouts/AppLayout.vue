@@ -56,6 +56,10 @@ const nav = [
   { name: 'Projects', href: '#', icon: FolderIcon, route: [] },
 ];
 
+const settingsNavigation = {
+  route: ['settings.account', 'settings.notifications'],
+};
+
 let navigation = computed(() => {
   if (auth.value?.user.is_admin) {
     return nav;
@@ -468,16 +472,16 @@ function handleEscape() {
                       </ul>
                     </li>
                     <li class="mt-auto">
-                      <a
-                        href="#"
-                        class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
+                      <Link
+                        :href="route('settings.account')"
+                        :class="[settingsNavigation.route.includes(pageRoute) ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold']"
                       >
                         <Cog6ToothIcon
-                          class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
+                          :class="[settingsNavigation.route.includes(pageRoute) ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600', 'size-6 shrink-0']"
                           aria-hidden="true"
                         />
                         Settings
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </nav>
@@ -680,16 +684,16 @@ function handleEscape() {
                 </ul>
               </li>
               <li class="mt-auto">
-                <a
-                  href="#"
-                  class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
+                <Link
+                  :href="route('settings.account')"
+                  :class="[settingsNavigation.route.includes(pageRoute) ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold']"
                 >
                   <Cog6ToothIcon
-                    class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
+                    :class="[settingsNavigation.route.includes(pageRoute) ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600', 'size-6 shrink-0']"
                     aria-hidden="true"
                   />
                   Settings
-                </a>
+                </Link>
               </li>
             </ul>
           </nav>

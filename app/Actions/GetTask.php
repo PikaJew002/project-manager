@@ -3,7 +3,7 @@
 namespace App\Actions;
 
 use App\Models\Task;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class GetTask
