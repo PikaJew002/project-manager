@@ -73,7 +73,7 @@ class AcceptInvite
 
         Auth::login($user);
 
-        session()->flash('inertia', ['status' => "Invitation Accepted! Welcome aboard, {$fields['first_name']}!"]);
+        session()->flash('inertia', ['status' => "Invitation accepted! Welcome aboard, {$fields['first_name']}!"]);
 
         return response()->redirectToRoute('dashboard-grid');
     }

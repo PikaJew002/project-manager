@@ -15,6 +15,6 @@ class Logout
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return response()->redirectToRoute('welcome');
     }
 }
