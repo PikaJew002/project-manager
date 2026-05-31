@@ -11,7 +11,7 @@ use App\Actions\DeleteBucket;
 use App\Actions\DeleteTask;
 use App\Actions\Login;
 use App\Actions\Logout;
-use App\Actions\RegisterOrganization as RegisterOrganizationAction;
+use App\Actions\RegisterOrganization;
 use App\Actions\ResetInvite;
 use App\Actions\UpdateBucket;
 use App\Actions\UpdateNotifications;
@@ -23,23 +23,28 @@ use App\Http\Pages\Organization;
 use App\Http\Pages\ProjectBoard;
 use App\Http\Pages\ProjectGrid;
 use App\Http\Pages\RegisterFromInvite;
-use App\Http\Pages\RegisterOrganization;
 use App\Http\Pages\Settings\Account as AccountSettings;
 use App\Http\Pages\Settings\Notifications as NotificationsSettings;
-use App\Http\Pages\VerifyNotice;
-use App\Http\Pages\Welcome;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::middleware('guest')->group(function () {
-    // page
-    Route::get('/', Welcome::class)->name('welcome');
-    Route::get('/register', RegisterOrganization::class)->name('register-organization');
+    // pages
+    Route::get('/', function () {
+        return Inertia::render('Welcome');
+    })->name('welcome');
+
+    Route::get('/register', function () {
+        return Inertia::render('RegisterOrganization');
+    })->name('register-organization');
+
     Route::get('/register/invite/{token}', RegisterFromInvite::class)->name('register-invite');
 
     // api
     Route::post('/login', Login::class)->name('login');
-    Route::post('/register', RegisterOrganizationAction::class)->name('register');
+    Route::post('/register', RegisterOrganization::class)->name('register');
     Route::post('/invite/accept', AcceptInvite::class)->name('invite-accept');
     Route::post('/invite/decline', DeclineInvite::class)->name('invite-decline');
     Route::post('/invite/reset', ResetInvite::class)->name('invite-reset');
@@ -47,14 +52,33 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     // verify notice page
-    Route::get('/email/verify', VerifyNotice::class)->name('verification.notice');
+    Route::get('/email/verify', function (Request $request) {
+        if ($request->user()->email_verified_at !== null) {
+            session()->flash('inertia', ['status' => 'Your email address has already been verified.']);
+
+            return response()->redirectToRoute('dashboard-grid');
+        }
+
+        return Inertia::render('VerifyNotice');
+    })->name('verification.notice');
+
+
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $request->fulfill();
+
+        session()->flash('inertia', ['status' => 'Your email address has been verified.']);
+
+        return response()->redirectToRoute('dashboard-grid');
+    })->middleware('signed')->name('verification.verify');
 
     // resend verification email
     Route::post('/email/verification-notification', function (Request $request) {
         $request->user()->sendEmailVerificationNotification();
 
-        return back()->with('message', 'Verification link sent!');
-    })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+        session()->flash('inertia', ['status' => 'Verification link sent!']);
+
+        return response()->redirectToRoute('verification.notice');
+    })->middleware('throttle:6,1')->name('verification.send');
 
     Route::middleware('verified')->group(function () {
         // pages

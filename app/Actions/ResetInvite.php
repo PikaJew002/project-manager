@@ -31,7 +31,7 @@ class ResetInvite
             'declined_at' => null,
         ]);
 
-        session()->flash('inertia', ['status' => "Invitation Reset! You may respond to this invite again."]);
+        session()->flash('inertia', ['status' => "Invitation reset! You may respond to this invite again."]);
 
         return response()->redirectToRoute('register-invite', $token);
     }

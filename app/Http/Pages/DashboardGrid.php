@@ -18,6 +18,7 @@ class DashboardGrid
     {
         $user = $request->user();
         $projectsIds = Project::yourProjects($user)->get()->pluck('id');
+        /** @var \Illuminate\Database\Eloquent\Collection<int, Task> $tasks */
         $tasks = Task::with([
             'buckets' => function (BelongsToMany $query) use ($projectsIds) {
                 $query->whereIn('project_id', $projectsIds)->with(['project']);

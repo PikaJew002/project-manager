@@ -1,5 +1,6 @@
 <script setup>
-import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import AuthLayout from '../layouts/AuthLayout.vue';
 
 let page = usePage();
@@ -10,9 +11,13 @@ let form = useForm({
   remember: false,
 });
 
-function submit() {
-  form.post(route('login'), {
-    onFinish: () => form.reset('password'),
+let isSendingVerificationEmail = ref(false);
+
+function resendVerificationEmail() {
+  form.post(route('verification.send'), {
+    onFinish: () => {
+      isSendingVerificationEmail.value = true;
+    },
   });
 };
 </script>
@@ -29,16 +34,20 @@ function submit() {
         </div>
       </div>
       <div class="grid gap-6">
-        <div>
-          <p>
-            Please click the link in the email we sent to verify your email address to log in. You may need to check your spam folder.
-          </p>
-          <p>
-            If you need to resend the verification email, please click the button below.
-          </p>
-          <button type="button" @click="resendVerificationEmail" class="bg-blue-500 text-white px-4 py-2 rounded-md">
-            Resend Verification Email
-          </button>
+        <div class="space-y-6">
+          <div class="space-y-2">
+            <p class="text-center text-sm text-muted-foreground">
+              Please click the link in the email we sent to verify your email address to log in. You may need to check your spam folder.
+            </p>
+            <p v-if="!isSendingVerificationEmail" class="text-center text-sm text-muted-foreground">
+              If you need to resend the verification email, please click the button below.
+            </p>
+          </div>
+          <div v-if="!isSendingVerificationEmail" class="flex justify-center">
+            <button type="button" @click="resendVerificationEmail" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+              Resend Verification Email
+            </button>
+          </div>
         </div>
       </div>
     </div>
