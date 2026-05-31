@@ -685,7 +685,7 @@ function handleEscape() {
               </li>
               <li class="mt-auto">
                 <Link
-                  :href="route('settings.account')"
+                  :href="route('settings.notifications')"
                   :class="[settingsNavigation.route.includes(pageRoute) ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold']"
                 >
                   <Cog6ToothIcon
