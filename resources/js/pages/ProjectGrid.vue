@@ -86,13 +86,13 @@ function onEditParentTask(taskId) {
 <template>
   <Head title="Project Manager" />
   <AppLayout :pageRoute="route().current()" :paramId="route().params.id">
-    <div class="sm:flex sm:items-center pt-10 px-4 sm:px-6 lg:px-8">
+    <div class="sm:flex sm:items-center pb-2 pt-4 sm:pt-10 sm:pb-0 px-4 sm:px-6 lg:px-8">
       <div class="sm:grow sm:shrink">
         <h1 class="text-base font-semibold text-gray-900">{{ project.name }}</h1>
         <p class="mt-2 text-sm text-gray-700">A list of this project's tasks</p>
       </div>
-      <div class="flex flex-col gap-y-8 sm:flex-row">
-        <div class="flex gap-8 order-last sm:order-first">
+      <div class="flex justify-between gap-y-8 sm:flex-row">
+        <div class="flex items-center gap-8 order-last sm:order-first">
           <span class="border-b-2 border-b-indigo-600 pb-2">
             <span class="text-indigo-600"><GridIcon :filled="true" /></span> <span class="font-medium">Grid</span>
           </span>
@@ -100,7 +100,7 @@ function onEditParentTask(taskId) {
             <span class="text-black"><BoardIcon :filled="false" /></span> <span class="font-normal">Board</span>
           </Link>
         </div>
-        <div v-if="tasks.length > 0" class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none order-first sm:order-last">
+        <div v-if="tasks.length > 0" class="mt-2 sm:ml-16 sm:mt-0 sm:flex-none order-first sm:order-last">
           <button
             type="button"
             @click="openCreateTaskModal"
