@@ -125,4 +125,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
         return (int) $now->format('H') === 8 && (int) $now->format('i') === 0;
     }
+
+    public function isMondayInTimezone(): bool
+    {
+        $tz = new DateTimeZone($this->timezone ?? config('app.timezone'));
+        $now = new DateTime('now', $tz);
+
+        return (int) $now->format('w') === 1;
+    }
 }

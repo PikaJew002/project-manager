@@ -33,6 +33,17 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'timezone' => fake()->timezone(),
+            'settings' => [
+                'notifications' => [
+                    'daily_tasks_due' => true,
+                    'weekly_tasks_due' => true,
+                    'tasks_assigned' => true,
+                    'tasks_updated' => true,
+                    'tasks_stale_7_days' => true,
+                    'tasks_stale_30_days' => true,
+                ],
+            ],
         ];
     }
 
