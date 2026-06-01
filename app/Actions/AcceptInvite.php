@@ -52,6 +52,8 @@ class AcceptInvite
                         'weekly_tasks_due' => true,
                         'tasks_assigned' => true,
                         'tasks_updated' => true,
+                        'tasks_stale_7_days' => true,
+                        'tasks_stale_30_days' => true,
                     ],
                 ],
             ]);

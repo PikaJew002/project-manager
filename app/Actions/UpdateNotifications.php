@@ -14,6 +14,8 @@ class UpdateNotifications
             'weekly_tasks_due' => ['required', 'boolean'],
             'tasks_assigned' => ['required', 'boolean'],
             'tasks_updated' => ['required', 'boolean'],
+            'tasks_stale_7_days' => ['required', 'boolean'],
+            'tasks_stale_30_days' => ['required', 'boolean'],
         ]);
 
         $user = $request->user();
@@ -23,6 +25,8 @@ class UpdateNotifications
             'weekly_tasks_due' => $fields['weekly_tasks_due'],
             'tasks_assigned' => $fields['tasks_assigned'],
             'tasks_updated' => $fields['tasks_updated'],
+            'tasks_stale_7_days' => $fields['tasks_stale_7_days'],
+            'tasks_stale_30_days' => $fields['tasks_stale_30_days'],
         ];
 
         $user->save();

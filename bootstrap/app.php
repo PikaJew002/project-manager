@@ -2,14 +2,14 @@
 
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Models\User;
-use App\Notifications\TaskDue;
+use App\Notifications\TasksDue;
+use App\Notifications\TasksStale;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Sentry\Laravel\Integration;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command('model:prune')->daily();
+
         // Notify users of tasks that are due today at precisely 8:00 AM in their timezone
         $schedule->call(function () {
             $users = User::with(['tasks' => function (BelongsToMany $query) {
@@ -34,7 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     ->whereBetween('due_at', [
                         now()->subHours(8)->setMinutes(0)->setSeconds(0),
                         now()->addHours(16)->setMinutes(0)->setSeconds(0),
-                    ])->wherePivotNull('notified_at');
+                    ]);
             }])->where('settings->notifications->daily_tasks_due', true)->get()->filter(function (User $user) {
                 return $user->is8AMInTimezone();
             })->filter(function (User $user) {
@@ -43,17 +44,82 @@ return Application::configure(basePath: dirname(__DIR__))
 
             foreach ($users as $user) {
                 /** @var User $user */
-                foreach ($user->tasks as $task) {
-                    $user->notify(new TaskDue($task));
-                    DB::table('task_user')->where('task_id', $task->id)->where('user_id', $user->id)->update(['notified_at' => now(), 'updated_at' => now()]);
+                $user->notify(new TasksDue($user->tasks, 'Today'));
+            }
+        })->hourly();
+
+        // Notify users of tasks that are due this week at precisely Monday 8:00 AM in their timezone
+        $schedule->call(function () {
+            $users = User::with([
+                'tasks' => function (BelongsToMany $query) {
+                    $query->whereNull('completed_at')
+                        ->whereNotNull('due_at')
+                        ->whereBetween('due_at', [
+                            now()->subHours(8)->setMinutes(0)->setSeconds(0),
+                            now()->addDays(4)->addHours(16)->setMinutes(0)->setSeconds(0),
+                        ]);
                 }
+            ])->where('settings->notifications->weekly_tasks_due', true)->get()->filter(function (User $user) {
+                return $user->isMondayInTimezone() && $user->is8AMInTimezone();
+            })->filter(function (User $user) {
+                return $user->tasks->isNotEmpty();
+            });
+
+            foreach ($users as $user) {
+                /** @var User $user */
+                $user->notify(new TasksDue($user->tasks, 'This Week'));
+            }
+        })->hourly();
+
+        // Notify users of tasks that have had no activity for 7 days at precisely 8:00 AM in their timezone
+        $schedule->call(function () {
+            $users = User::with(['tasks' => function (BelongsToMany $query) {
+                $query->whereNull('completed_at')
+                    ->whereNull('due_at')
+                    ->whereBetween('updated_at', [
+                        now()->subDays(7)->subHours(8)->setMinutes(0)->setSeconds(0),
+                        now()->subDays(7)->addHours(16)->setMinutes(0)->setSeconds(0),
+                    ]);
+            }])->where('settings->notifications->tasks_stale_7_days', true)->get()->filter(function (User $user) {
+                return $user->is8AMInTimezone();
+            })->filter(function (User $user) {
+                return $user->tasks->isNotEmpty();
+            });
+
+            foreach ($users as $user) {
+                /** @var User $user */
+                $user->notify(new TasksStale($user->tasks, 7));
+            }
+        })->hourly();
+
+        // Notify users of tasks that have had no activity for 30 days at precisely 8:00 AM in their timezone
+        $schedule->call(function () {
+            $users = User::with([
+                'tasks' => function (BelongsToMany $query) {
+                    $query->whereNull('completed_at')
+                        ->whereNull('due_at')
+                        ->whereBetween('updated_at', [
+                            now()->subDays(30)->subHours(8)->setMinutes(0)->setSeconds(0),
+                            now()->subDays(30)->addHours(16)->setMinutes(0)->setSeconds(0),
+                        ]);
+                }
+            ])->where('settings->notifications->tasks_stale_30_days', true)->get()->filter(function (User $user) {
+                return $user->is8AMInTimezone();
+            })->filter(function (User $user) {
+                return $user->tasks->isNotEmpty();
+            });
+
+            foreach ($users as $user) {
+                /** @var User $user */
+                $user->notify(new TasksStale($user->tasks, 30));
             }
         })->hourly();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->respond(function (Response $response, Throwable $exception, Request $request) {
             if ($response->getStatusCode() === 419) {
-                return back()->withInput(['message' => 'Session expired. Please login again.'])->redirectToRoute('welcome');
+                session()->flash('inertia', ['status' => 'Session expired. Please login again.']);
+                return response()->redirectToRoute('welcome');
             }
 
             return $response;
