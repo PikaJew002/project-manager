@@ -63,7 +63,7 @@ class Task extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withPivot('assigned_by', 'notified_at')->withTimestamps();
+        return $this->belongsToMany(User::class)->withPivot('assigned_by')->withTimestamps();
     }
 
     public function projects(): BelongsToMany
