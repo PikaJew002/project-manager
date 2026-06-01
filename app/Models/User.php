@@ -96,7 +96,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function tasks(): BelongsToMany
     {
-        return $this->belongsToMany(Task::class)->withPivot('assigned_by', 'notified_at')->withTimestamps()->orderByRaw('(completed_at IS NOT NULL) ASC')
+        return $this->belongsToMany(Task::class)->withPivot('assigned_by')->withTimestamps()->orderByRaw('(completed_at IS NOT NULL) ASC')
             ->orderByRaw('(started_at IS NOT NULL) ASC')
             ->orderByRaw('(due_at IS NULL) ASC')
             ->orderBy('due_at')
