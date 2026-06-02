@@ -76,7 +76,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $users = User::with(['tasks' => function (BelongsToMany $query) {
                 $query->whereNull('completed_at')
                     ->whereNull('due_at')
-                    ->whereBetween('updated_at', [
+                    ->whereBetween('tasks.updated_at', [
                         now()->subDays(7)->subHours(8)->setMinutes(0)->setSeconds(0),
                         now()->subDays(7)->addHours(16)->setMinutes(0)->setSeconds(0),
                     ]);
@@ -98,7 +98,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 'tasks' => function (BelongsToMany $query) {
                     $query->whereNull('completed_at')
                         ->whereNull('due_at')
-                        ->whereBetween('updated_at', [
+                        ->whereBetween('tasks.updated_at', [
                             now()->subDays(30)->subHours(8)->setMinutes(0)->setSeconds(0),
                             now()->subDays(30)->addHours(16)->setMinutes(0)->setSeconds(0),
                         ]);
