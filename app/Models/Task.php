@@ -121,7 +121,7 @@ class Task extends Model
     {
         $query
             ->orderByRaw('(completed_at IS NOT NULL) ASC')
-            ->orderByRaw('(started_at IS NOT NULL) ASC')
+            ->orderByRaw('(started_at IS NOT NULL) DESC')
             ->orderByRaw('(due_at IS NULL) ASC')
             ->orderBy('due_at')
             ->orderByRaw("
