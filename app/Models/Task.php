@@ -87,19 +87,7 @@ class Task extends Model
             },
             'tasks' => function () {},
             'users' => function () {},
-        ])->orderByRaw('(completed_at IS NOT NULL) ASC')
-            ->orderByRaw('(started_at IS NOT NULL) ASC')
-            ->orderByRaw('(due_at IS NULL) ASC')
-            ->orderBy('due_at')
-            ->orderByRaw("
-                CASE priority
-                    WHEN 'Urgent' THEN 1
-                    WHEN 'Important' THEN 2
-                    WHEN 'Medium' THEN 3
-                    WHEN 'Low' THEN 4
-                END
-            ")
-            ->orderBy('name');
+        ])->ordered();
     }
 
     public function task(): BelongsTo
