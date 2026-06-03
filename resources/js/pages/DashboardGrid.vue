@@ -1,11 +1,9 @@
 <script setup>
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { storeToRefs } from 'pinia';
 import { useTaskModalStore } from '../stores/task-modal.js';
 import { usePagesStore } from '../stores/pages.js';
-import AppLayout from '../layouts/AppLayout.vue';
-import BoardIcon from '../components/icons/BoardIcon.vue';
-import GridIcon from '../components/icons/GridIcon.vue';
+import TasksLayout from '../layouts/TasksLayout.vue';
 import GridDashboard from '../components/GridDashboard.vue';
 import TaskModal from '../components/TaskModal.vue';
 
@@ -77,32 +75,14 @@ function onChangeTask(taskId) {
 
 <template>
   <Head title="Project Manager" />
-  <AppLayout :pageRoute="route().current()">
-    <div class="sm:flex sm:items-center pb-2 pt-4 sm:pt-10 sm:pb-0 px-4 sm:px-6 lg:px-8">
-      <div class="sm:flex-auto">
-        <h1 class="text-base font-semibold text-gray-900">Your Tasks</h1>
-        <p class="mt-2 text-sm text-gray-700">A list of all tasks you are assigned to</p>
-      </div>
-      <div class="flex justify-between gap-y-8 sm:flex-row">
-        <div class="flex items-center gap-8 order-last sm:order-first">
-          <span class="border-b-2 border-b-indigo-600 pb-2">
-            <span class="text-indigo-600"><GridIcon :filled="true" /></span> <span class="font-medium">Grid</span>
-          </span>
-          <Link :href="route('dashboard-board')" class="pb-[calc(0.5rem+2px)]">
-            <span class="text-black"><BoardIcon :filled="false" /></span> <span class="font-normal">Board</span>
-          </Link>
-        </div>
-        <div v-if="tasks.length > 0" class="mt-2 sm:ml-16 sm:mt-0 sm:flex-none order-first sm:order-last">
-          <button
-            type="button"
-            @click="openCreateTaskModal"
-            class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Add Task
-          </button>
-        </div>
-      </div>
-    </div>
+  <TasksLayout
+    :pageRoute="route().current()"
+    otherVersionPageRouteName="dashboard-board"
+    pageTitle="Your Tasks"
+    pageDescription="A list of all tasks you are assigned to"
+    @openCreateTaskModal="openCreateTaskModal"
+    :showCreateTaskButton="tasks.length > 0"
+  >
     <GridDashboard v-if="tasks.length > 0" :items="tasks" @edit-task="openEditTaskModal" @update-task-status="updateTaskStatus" />
     <div v-else class="text-center mt-6">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-auto size-12 text-gray-400" aria-hidden="true">
@@ -117,5 +97,5 @@ function onChangeTask(taskId) {
       </div>
     </div>
     <TaskModal :page="currentURL" @updated-tasks="onUpdatedTasks" @load-task="onChangeTask" />
-  </AppLayout>
+  </TasksLayout>
 </template>
