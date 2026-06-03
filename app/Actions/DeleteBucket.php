@@ -18,7 +18,7 @@ class DeleteBucket
         $project->tasks()->attach($taskIds);
         $bucket->tasks()->detach($taskIds);
 
-        $bucket->delete();
+        Bucket::destroy($id);
 
         return response()->noContent();
     }
