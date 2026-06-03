@@ -52,7 +52,9 @@ let addTaskButton = useTemplateRef('add-task-button');
 
 let newTaskName = ref('');
 
-onClickOutside(newTaskInput, () => addTaskMode.value = false);
+onClickOutside(newTaskInput, () => {
+  onSubTaskClose();
+});
 
 let assigned_to_task = computed({
   get() {
@@ -131,6 +133,11 @@ function onClose() {
   formErrors.projects = [];
 }
 
+function onSubTaskClose() {
+  addTaskMode.value = false;
+  newTaskName.value = '';
+}
+
 function onSubmit() {
   if (id.value) {
     store.onFormSubmitUpdate(props.page, function (results) {
@@ -165,18 +172,16 @@ function onNewTaskSubmit() {
   if (newTaskName.value !== '') {
     store.onSubTaskFormSubmitCreate(newTaskName.value, props.page, function (results) {
       emit('updatedTasks', results);
-      addTaskMode.value = false;
+      onSubTaskClose();
       tasks.value = results.props.subtasks;
-      newTaskName.value = '';
     });
   } else {
-    addTaskMode.value = false;
-    newTaskName.value = '';
+    onSubTaskClose();
   }
 }
 
 function handleEscape() {
-  addTaskMode.value = false;
+  onSubTaskClose();
   nextTick(() => {
     addTaskButton.value.focus();
   });
