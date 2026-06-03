@@ -121,7 +121,7 @@ class Task extends Model
     {
         $query
             ->orderByRaw('(completed_at IS NOT NULL) ASC')
-            ->orderByRaw('(started_at IS NOT NULL) ASC')
+            ->orderByRaw('(started_at IS NOT NULL) DESC')
             ->orderByRaw('(due_at IS NULL) ASC')
             ->orderBy('due_at')
             ->orderByRaw("
@@ -133,25 +133,6 @@ class Task extends Model
             END
         ")
             ->orderBy('name');
-    }
-
-    public static function projectTasks(int $projectId, Collection $projectsIds): EloquentCollection
-    {
-        return static::with([
-            'projects' => function (BelongsToMany $query) use ($projectsIds) {
-                $projectsString = $projectsIds->join(',');
-                $query->whereRaw("`projects`.`id` in ({$projectsString})")->with('buckets.tasks');
-            },
-            'buckets' => function (BelongsToMany $query) use ($projectsIds) {
-                $query->whereIn('project_id', $projectsIds)->with('tasks');
-            },
-            'tasks' => function () {},
-            'users' => function () {},
-        ])->where(function (Builder $query) use ($projectId) {
-            $query->whereRelation('projects', DB::raw('`projects`.`id`'), $projectId)->orWhereHas('buckets', function (Builder $query) use ($projectId) {
-                $query->where('project_id', $projectId);
-            });
-        })->get();
     }
 
     public static function createFrom(array $fields, User $user, ?string $timezone = null): static

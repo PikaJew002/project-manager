@@ -1,14 +1,12 @@
 <script setup>
 import { nextTick, ref, useTemplateRef } from 'vue';
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { onClickOutside } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { useForm } from '@inertiajs/vue3';
 import { useTaskModalStore } from '../stores/task-modal.js';
 import { usePagesStore } from '../stores/pages.js';
-import AppLayout from '../layouts/AppLayout.vue';
-import BoardIcon from '../components/icons/BoardIcon.vue';
-import GridIcon from '../components/icons/GridIcon.vue';
+import TasksLayout from '../layouts/TasksLayout.vue';
 import TaskModal from '../components/TaskModal.vue';
 import BoardDashboard from '../components/BoardDashboard.vue';
 import Bucket from '../components/dashboard/Bucket.vue';
@@ -133,32 +131,14 @@ function onChangeTask(taskId) {
 
 <template>
   <Head title="Project Manager" />
-  <AppLayout :pageRoute="route().current()" :paramId="route().params.id">
-    <div class="sm:flex sm:items-center pb-2 pt-4 sm:pt-10 sm:pb-0 px-4 sm:px-6 lg:px-8">
-      <div class="sm:grow sm:shrink">
-        <h1 class="text-base font-semibold text-gray-900">{{ project.name }}</h1>
-        <p class="mt-2 text-sm text-gray-700">A list of this project's tasks</p>
-      </div>
-      <div class="flex justify-between gap-y-8 sm:flex-row">
-        <div class="flex gap-8 order-last sm:order-first">
-          <Link :href="route('project-grid', id)" class="pb-[calc(0.5rem+2px)]">
-            <span class="text-black"><GridIcon :filled="false" /></span> <span class="font-normal">Grid</span>
-          </Link>
-          <span class="border-b-2 border-b-indigo-600 pb-2">
-            <span class="text-indigo-600"><BoardIcon :filled="true" /></span> <span class="font-medium">Board</span>
-          </span>
-        </div>
-        <div class="mt-2 sm:ml-16 sm:mt-0 sm:flex-none order-first sm:order-last">
-          <button
-            type="button"
-            @click="openCreateTaskModal()"
-            class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Add Task
-          </button>
-        </div>
-      </div>
-    </div>
+  <TasksLayout
+    :pageRoute="route().current()"
+    :paramId="route().params.id"
+    otherVersionPageRouteName="project-grid"
+    :pageTitle="project.name"
+    pageDescription="A list of this project's tasks"
+    @openCreateTaskModal="openCreateTaskModal"
+  >
     <BoardDashboard>
       <Bucket
         title="No Bucket"
@@ -204,5 +184,5 @@ function onChangeTask(taskId) {
       </BucketWrapper>
     </BoardDashboard>
     <TaskModal :page="currentURL" @updated-tasks="onUpdatedTasks" @load-task="onChangeTask" />
-  </AppLayout>
+  </TasksLayout>
 </template>

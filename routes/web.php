@@ -2,13 +2,13 @@
 
 use App\Actions\AcceptInvite;
 use App\Actions\CreateBucket;
-use App\Actions\CreateInvite;
 use App\Actions\CreateSubtask;
 use App\Actions\CreateProject;
 use App\Actions\CreateTask;
 use App\Actions\DeclineInvite;
 use App\Actions\DeleteBucket;
 use App\Actions\DeleteTask;
+use App\Actions\InviteUser;
 use App\Actions\Login;
 use App\Actions\Logout;
 use App\Actions\RegisterOrganization;
@@ -109,7 +109,7 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/project', CreateProject::class)->name('create-project');
 
-        Route::post('/invite', CreateInvite::class)->name('create-invite');
+        Route::post('/invite', InviteUser::class)->name('invite-user');
 
         Route::redirect('/dashboard', '/dashboard/grid');
     });
