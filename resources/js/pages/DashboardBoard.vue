@@ -28,7 +28,7 @@ taskModalStore.setUsers(page.props.task_options?.assignable_users);
 taskModalStore.setProjects(page.props.task_options?.your_projects);
 taskModalStore.setBuckets(page.props.task_options?.your_buckets);
 
-let { open, projects, assigned_to, status } = storeToRefs(taskModalStore);
+let { open, projects, buckets, assigned_to, status } = storeToRefs(taskModalStore);
 
 let hasNoTasks = computed(() => {
   if (pagesStore.project_tasks.length > 0) {
@@ -69,9 +69,16 @@ function updateTaskStatus({ task, newStatus }) {
   });
 }
 
-function openCreateTaskModal() {
+function openCreateTaskModal(projectId = null, bucketId = null) {
   assigned_to.value = [page.props.task_options?.assignable_users.find(u => u.is_me)];
-  projects.value = [page.props.task_options?.your_projects.find(p => p.is_personal)?.id];
+  if (projectId) {
+    projects.value = [projectId];
+  } else {
+    projects.value = [page.props.task_options?.your_projects.find(p => p.is_personal)?.id];
+  }
+  if (bucketId) {
+    buckets.value = [bucketId];
+  }
 
   open.value = true;
 }
@@ -101,7 +108,7 @@ function onEditParentTask(taskId) {
     otherVersionPageRouteName="dashboard-grid"
     pageTitle="Your Tasks"
     pageDescription="A board of all tasks you are assigned to by bucket"
-    @openCreateTaskModal="openCreateTaskModal"
+    @openCreateTaskModal="openCreateTaskModal()"
     :showCreateTaskButton="!hasNoTasks"
   >
     <BoardDashboard v-if="!hasNoTasks" >
@@ -109,7 +116,6 @@ function onEditParentTask(taskId) {
         v-if="pagesStore.project_tasks.length > 0"
         title="Other Projects"
         :tasks="pagesStore.project_tasks"
-        @click-add-task="openCreateTaskModal"
         @click-task-card="openEditTaskModal"
         @update-task-status="updateTaskStatus"
         :show-three-dots="false"
@@ -121,7 +127,7 @@ function onEditParentTask(taskId) {
           title="No Bucket"
           :subtitle="project.name"
           :tasks="project.tasks"
-          @click-add-task="openCreateTaskModal"
+          @click-add-task="openCreateTaskModal(project.id)"
           @click-task-card="openEditTaskModal"
           @update-task-status="updateTaskStatus"
           :show-three-dots="false"
@@ -134,7 +140,7 @@ function onEditParentTask(taskId) {
           :id="bucket.id"
           :tasks="bucket.tasks"
           :show-three-dots="false"
-          @click-add-task="openCreateTaskModal"
+          @click-add-task="openCreateTaskModal(project.id, bucket.id)"
           @click-task-card="openEditTaskModal"
           @update-task-status="updateTaskStatus"
         />
@@ -147,7 +153,7 @@ function onEditParentTask(taskId) {
       <h3 class="mt-2 text-sm font-semibold text-gray-900">No tasks</h3>
       <p class="mt-1 text-sm text-gray-500">Get started by creating a new task.</p>
       <div class="mt-6">
-        <button @click="openCreateTaskModal" type="button" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <button @click="openCreateTaskModal()" type="button" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           Add Task
         </button>
       </div>
