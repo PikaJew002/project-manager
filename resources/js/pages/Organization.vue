@@ -22,7 +22,7 @@ let form = useForm({
 });
 
 function onNewInvite() {
-  form.post(route('create-invite'), {
+  form.post(route('invite-user'), {
     onFinish: () => {
       form.reset();
     },

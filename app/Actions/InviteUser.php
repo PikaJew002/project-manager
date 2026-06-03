@@ -4,13 +4,13 @@ namespace App\Actions;
 
 use App\Models\Invite;
 use App\Models\User;
-use App\Notifications\InviteUser;
+use App\Notifications\InviteUser as InviteUserNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
-class CreateInvite
+class InviteUser
 {
     public function __invoke(Request $request): RedirectResponse
     {
@@ -25,7 +25,7 @@ class CreateInvite
             'token' => Str::random(16),
         ]);
 
-        Notification::route('mail', $request->email)->notify(new InviteUser($invite));
+        Notification::route('mail', $request->email)->notify(new InviteUserNotification($invite));
 
         session()->flash('inertia', ['status' => 'New User Invite Sent!']);
 
