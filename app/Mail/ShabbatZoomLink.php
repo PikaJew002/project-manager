@@ -8,7 +8,6 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Carbon;
 
 class ShabbatZoomLink extends Mailable
 {
@@ -17,9 +16,7 @@ class ShabbatZoomLink extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(
-        public ?Carbon $date = null,
-    )
+    public function __construct()
     {
         //
     }
@@ -29,10 +26,15 @@ class ShabbatZoomLink extends Mailable
      */
     public function envelope(): Envelope
     {
-        $dateString = $this->date ? $this->date->timezone('America/New_York')->format('M j, Y') : now('America/New_York')->addDays(2)->format('M j, Y');
+        $dateString = now('America/New_York')->addDays(2)->format('M j, Y');
+
+        $recipients = env('BH_ZOOM_RECIPIENTS');
+        $recipients = explode(',', $recipients);
 
         return new Envelope(
-            from: new Address('aaron@ironmthome.com', 'Aaron Eisenberg'),
+            from: new Address(env('BH_ZOOM_TO_ADDRESS'), env('BH_ZOOM_TO_NAME')),
+            to: [env('BH_ZOOM_TO_ADDRESS')],
+            bcc: $recipients,
             subject: 'Baruch Haba is inviting you to a scheduled Zoom meeting.  Topic: Shabbat Service Baruch Haba Time: ' . $dateString . ' 11:00 AM',
         );
     }
@@ -45,7 +47,8 @@ class ShabbatZoomLink extends Mailable
         return new Content(
             text: 'email.zoom-link',
             with: [
-                'dateString' => $this->date ? $this->date->timezone('America/New_York')->format('M j, Y') : now('America/New_York')->addDays(2)->format('M j, Y'),
+                // assumes it's always sent on Thursdays at 5:00 PM EST
+                'dateString' => now('America/New_York')->addDays(2)->format('M j, Y'),
                 'link' => env('BH_ZOOM_LINK'),
                 'meetingPassword' => env('BH_ZOOM_MEETING_PASSWORD'),
                 'meetingId' => env('BH_ZOOM_MEETING_ID'),
