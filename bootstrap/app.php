@@ -119,7 +119,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $schedule->call(function () {
             Mail::mailer('smtp')->send(new ShabbatZoomLink());
-        })->weeklyOn(6, '17:00')->timezone('America/New_York'); // Thursday at 5:00 PM EST
+        })->weeklyOn(4, '17:00')->timezone('America/New_York'); // Thursday at 5:00 PM EST
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->respond(function (Response $response, Throwable $exception, Request $request) {
