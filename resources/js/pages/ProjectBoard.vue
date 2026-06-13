@@ -90,11 +90,13 @@ function onNewBucketSubmit() {
         taskModalStore.setProjects(page.props.task_options?.your_projects);
         taskModalStore.setBuckets(page.props.task_options?.your_buckets);
         addBucketMode.value = false;
+				newBucketName.value = '';
         form.reset();
       },
       onError: (err) => {
         console.log(err);
         addBucketMode.value = false;
+				newBucketName.value = '';
         form.reset();
       },
     });
