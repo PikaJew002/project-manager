@@ -118,12 +118,8 @@ return Application::configure(basePath: dirname(__DIR__))
         })->hourly();
 
         $schedule->call(function () {
-            Mail::mailer('smtp')->to('aaron@ironmthome.com')->bcc('rod@ironmthome.com')->send(new ShabbatZoomLink());
+            Mail::mailer('smtp')->send(new ShabbatZoomLink());
         })->weeklyOn(6, '17:00')->timezone('America/New_York'); // Thursday at 5:00 PM EST
-
-        $schedule->call(function () {
-            Mail::mailer('smtp')->to('aaron@ironmthome.com')->bcc('rod@ironmthome.com')->send(new ShabbatZoomLink(now('America/New_York')));
-        })->monthlyOn(13, '00:20')->timezone('America/New_York'); // 12:20 AM EST on the 13th of the month
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->respond(function (Response $response, Throwable $exception, Request $request) {
