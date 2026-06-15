@@ -4,7 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms & Privacy | Project Manager</title>
+    <link rel="icon" href="/favicon.ico" sizes="48x48">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <title>{{ config('app.name') }} | Terms & Privacy</title>
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,7 +30,7 @@
             <div class="flex items-center gap-2">
                 <a href="{{ route('marketing') }}" class="bg-appPurple text-white rounded-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="20 20 120 120" class="w-8 h-8">
-                        <title>Project Manager</title>
+                        <title>{{ config('app.name') }}</title>
                         <defs>
                             <linearGradient id="logoGradient" x1="0" y1="0" x2="140" y2="140"
                                 gradientUnits="userSpaceOnUse">
@@ -43,7 +46,7 @@
                             stroke-linejoin="round"></path>
                     </svg>
                 </a>
-                <span class="font-bold text-xl tracking-tight">Project Manager</span>
+                <span class="font-bold text-xl tracking-tight">{{ config('app.name') }}</span>
             </div>
             <div class="flex items-center gap-4">
                 <a href="{{ route('login') }}" class="hidden md:block text-sm font-medium hover:text-appPurple">Log in</a>
@@ -68,7 +71,7 @@
             </header>
 
             <p class="text-lg text-textMuted leading-relaxed mb-12">
-                Welcome to Project Manager. This page contains our Terms of Service and our Privacy Policy. By accessing
+                Welcome to {{ config('app.name') }}. This page contains our Terms of Service and our Privacy Policy. By accessing
                 or using our application, you agree to be bound by these terms and policies.
             </p>
 
@@ -81,7 +84,7 @@
                     <div>
                         <h3 class="text-lg font-semibold mb-3">1. Acceptance of Terms</h3>
                         <p class="text-textMuted leading-relaxed">
-                            By creating an account, accessing, or using Project Manager (the "Service"), you agree to
+                            By creating an account, accessing, or using {{ config('app.name') }} (the "Service"), you agree to
                             these Terms of Service. If you do not agree to these terms, please do not use the Service.
                         </p>
                     </div>
@@ -89,7 +92,7 @@
                     <div>
                         <h3 class="text-lg font-semibold mb-3">2. Description of Service</h3>
                         <p class="text-textMuted leading-relaxed">
-                            Project Manager is a cloud-based project management tool designed to help individuals and
+                            {{ config('app.name') }} is a cloud-based project management tool designed to help individuals and
                             teams organize tasks, collaborate, and manage workflows.
                         </p>
                     </div>
@@ -130,7 +133,7 @@
                     <div>
                         <h3 class="text-lg font-semibold mb-3">6. Limitation of Liability</h3>
                         <p class="text-textMuted leading-relaxed">
-                            To the maximum extent permitted by law, Project Manager shall not be liable for any
+                            To the maximum extent permitted by law, {{ config('app.name') }} shall not be liable for any
                             indirect, incidental, special, consequential, or punitive damages, or any loss of profits or
                             revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or
                             other intangible losses resulting from your use of the Service.
@@ -180,7 +183,7 @@
                             <li>With service providers who assist us in operating our business (e.g., hosting providers,
                                 payment processors), under strict confidentiality agreements.</li>
                             <li>To comply with legal obligations, enforce our Terms of Service, or protect the rights,
-                                property, or safety of Project Manager, our users, or others.</li>
+                                property, or safety of {{ config('app.name') }}, our users, or others.</li>
                         </ul>
                     </div>
 
@@ -239,7 +242,7 @@
             <div class="flex items-center gap-2">
                 <div class="bg-appPurple text-white rounded-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="20 20 120 120" class="w-8 h-8">
-                        <title>Project Manager</title>
+                        <title>{{ config('app.name') }}</title>
                         <defs>
                             <linearGradient id="logoGradient" x1="0" y1="0" x2="140" y2="140"
                                 gradientUnits="userSpaceOnUse">
@@ -255,7 +258,7 @@
                             stroke-linejoin="round"></path>
                     </svg>
                 </div>
-                <span class="font-bold text-lg text-textDark">Project Manager</span>
+                <span class="font-bold text-lg text-textDark">{{ config('app.name') }}</span>
             </div>
 
             <div class="flex gap-8 text-sm text-textMuted font-medium">
@@ -263,7 +266,7 @@
             </div>
 
             <p class="text-sm text-gray-400">
-                &copy; {{ date('Y') }} Project Manager. All rights reserved.
+                &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
             </p>
         </div>
     </footer>

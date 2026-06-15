@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Manager | Beautifully Simplified</title>
+    <link rel="icon" href="/favicon.ico" sizes="48x48">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <title>{{ config('app.name') }} | Beautifully Simplified</title>
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +27,7 @@
             <div class="flex items-center gap-2">
                 <a href="{{ route('marketing') }}" class="bg-appPurple text-white rounded-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="20 20 120 120" class="w-8 h-8">
-                        <title>Project Manager</title>
+                        <title>{{ config('app.name') }}</title>
                         <defs>
                             <linearGradient id="logoGradient" x1="0" y1="0" x2="140" y2="140" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#2563EB"></stop>
@@ -38,7 +41,7 @@
                         <path d="M100 85 L115 100 L135 70" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
                 </a>
-                <span class="font-bold text-xl tracking-tight">Project Manager</span>
+                <span class="font-bold text-xl tracking-tight">{{ config('app.name') }}</span>
             </div>
             <div class="hidden md:flex items-center gap-8 text-sm font-medium text-textMuted">
                 <a href="#features" class="hover:text-appPurple transition-colors">Features</a>
@@ -186,7 +189,7 @@
             <div class="flex items-center gap-2">
                 <div class="bg-appPurple text-white rounded-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="20 20 120 120" class="w-8 h-8">
-                        <title>Project Manager</title>
+                        <title>{{ config('app.name') }}</title>
                         <defs>
                             <linearGradient id="logoGradient" x1="0" y1="0" x2="140" y2="140" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#2563EB"></stop>
@@ -200,7 +203,7 @@
                         <path d="M100 85 L115 100 L135 70" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
                 </div>
-                <span class="font-bold text-lg text-textDark">Project Manager</span>
+                <span class="font-bold text-lg text-textDark">{{ config('app.name') }}</span>
             </div>
 
             <div class="flex gap-8 text-sm text-textMuted font-medium">
@@ -208,7 +211,7 @@
             </div>
 
             <p class="text-sm text-gray-400">
-                &copy; {{ date('Y') }} Project Manager. All rights reserved.
+                &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
             </p>
         </div>
     </footer>
