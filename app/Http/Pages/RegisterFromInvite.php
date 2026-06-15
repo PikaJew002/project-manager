@@ -22,7 +22,7 @@ class RegisterFromInvite
         if ($invite === null) {
             session()->flash('inertia', ['status' => "The invite link you are trying to access has been deleted (expires after one week)."]);
 
-            return response()->redirectToRoute('welcome');
+            return response()->redirectToRoute('login');
         }
 
         return Inertia::render('RegisterFromInvite', [

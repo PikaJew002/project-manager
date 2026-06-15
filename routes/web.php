@@ -31,10 +31,18 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::middleware('guest')->group(function () {
-    // pages
     Route::get('/', function () {
+        return view('marketing');
+    })->name('marketing');
+
+    Route::get('/privacy', function () {
+        return view('privacy');
+    })->name('privacy');
+
+    // pages
+    Route::get('/login', function () {
         return Inertia::render('Welcome');
-    })->name('welcome');
+    })->name('login');
 
     Route::get('/register', function () {
         return Inertia::render('RegisterOrganization');
