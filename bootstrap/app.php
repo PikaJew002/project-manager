@@ -23,7 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web([
             HandleInertiaRequests::class,
         ]);
-        $middleware->redirectGuestsTo(fn() => route('welcome'));
+        $middleware->redirectGuestsTo(fn() => route('login'));
         $middleware->redirectUsersTo(fn () => route('dashboard-grid'));
     })
     ->withSchedule(function (Schedule $schedule) {
@@ -125,7 +125,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->respond(function (Response $response, Throwable $exception, Request $request) {
             if ($response->getStatusCode() === 419) {
                 session()->flash('inertia', ['status' => 'Session expired. Please login again.']);
-                return response()->redirectToRoute('welcome');
+                return response()->redirectToRoute('login');
             }
 
             return $response;

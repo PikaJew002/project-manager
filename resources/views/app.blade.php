@@ -8,7 +8,7 @@
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
         <title inertia>{{ config('app.name', 'Project Manager') }}</title>
         @routes
-        @vite('resources/js/app.js')
+        @vite('resources/js/app.js', 'build')
         @inertiaHead
     </head>
     <body class="h-full">
