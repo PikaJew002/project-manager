@@ -17,9 +17,21 @@ class ProjectFactory extends Factory
      */
     public function definition(): array
     {
+        $projectNames = [
+            'Design Team Project',
+            'Development Team Project',
+            'QA Team Project',
+            'Documentation Team Project',
+            'Support Team Project',
+        ];
+
+        $projectName = $projectNames[array_rand($projectNames)];
+
+        $initials = Str::of($projectName)->substr(0, 2)->upper()->toString();
+
         return [
-            'name' => fake()->sentence(2),
-            'initials' => Str::of(fake()->word())->substr(0, 2)->upper()->toString(),
+            'name' => $projectName,
+            'initials' => $initials,
         ];
     }
 }

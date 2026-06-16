@@ -10,11 +10,13 @@ import {
   Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions,
 } from '@headlessui/vue';
 import { XMarkIcon } from '@heroicons/vue/24/outline';
-import { PlusIcon, CheckIcon, ChevronDownIcon } from '@heroicons/vue/20/solid';
+import { PlusIcon, CheckIcon } from '@heroicons/vue/20/solid';
 import { ChevronUpDownIcon } from '@heroicons/vue/16/solid';
 import { useTaskModalStore } from '../stores/task-modal.js';
 import InitialsList from './shared/InitialsList.vue';
 import TaskStatus from './shared/TaskStatus.vue';
+import TaskStatusSelect from './shared/TaskStatusSelect.vue';
+import TaskPrioritySelect from './shared/TaskPrioritySelect.vue';
 
 let props = defineProps({
   page: {
@@ -607,50 +609,11 @@ function onBackToParentTask() {
                             </div>
 
                             <div class="sm:col-span-3">
-                              <label for="status" class="block text-sm/6 font-medium text-gray-900">
-                                Progress
-                              </label>
-                              <div class="mt-2 grid grid-cols-1">
-                                <select
-                                  v-model="status"
-                                  id="status"
-                                  name="status"
-                                  class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                                >
-                                  <option>Not Started</option>
-                                  <option>In Progress</option>
-                                  <option>Completed</option>
-                                </select>
-                                <ChevronDownIcon
-                                  class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
-                                  aria-hidden="true"
-                                />
-                              </div>
+                              <TaskStatusSelect v-model="status" />
                             </div>
 
                             <div class="sm:col-span-3">
-                              <label
-                                for="priority"
-                                class="block text-sm/6 font-medium text-gray-900"
-                                >Priority</label
-                              >
-                              <div class="mt-2 grid grid-cols-1">
-                                <select
-                                  v-model="priority"
-                                  id="priority"
-                                  name="priority"
-                                  class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                                >
-                                  <option>Urgent</option>
-                                  <option>Important</option>
-                                  <option>Medium</option>
-                                  <option>Low</option>
-                                </select>
-                                <ChevronDownIcon
-                                  class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
-                                  aria-hidden="true"
-                                />
-                              </div>
+                              <TaskPrioritySelect v-model="priority" />
                             </div>
 
                             <div class="sm:col-span-6">
