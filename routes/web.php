@@ -51,7 +51,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/register/invite/{token}', RegisterFromInvite::class)->name('register-invite');
 
     // api
-    Route::post('/login', Login::class)->name('login');
+    Route::post('/login', Login::class)->name('login-action');
     Route::post('/register', RegisterOrganization::class)->name('register');
     Route::post('/invite/accept', AcceptInvite::class)->name('invite-accept');
     Route::post('/invite/decline', DeclineInvite::class)->name('invite-decline');
