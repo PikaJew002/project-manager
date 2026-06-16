@@ -30,15 +30,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::get('/', function () {
+    return view('marketing');
+})->name('marketing');
+
+Route::get('/privacy', function () {
+    return view('privacy');
+})->name('privacy');
+
 Route::middleware('guest')->group(function () {
-    Route::get('/', function () {
-        return view('marketing');
-    })->name('marketing');
-
-    Route::get('/privacy', function () {
-        return view('privacy');
-    })->name('privacy');
-
     // pages
     Route::get('/login', function () {
         return Inertia::render('Welcome');

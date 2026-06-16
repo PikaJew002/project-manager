@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import AuthLayout from '../layouts/AuthLayout.vue';
+
+let page = usePage();
 
 let props = defineProps({
   declined_at: {
@@ -58,7 +60,7 @@ function submitUnDecline() {
 </script>
 
 <template>
-  <Head title="Register" />
+  <Head :title="page.props.app_name + ' | Register'" />
   <AuthLayout>
     <p>
       You have been invited to {{ invited_to }} by {{ invited_by }}!<br>

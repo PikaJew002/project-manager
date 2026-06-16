@@ -291,7 +291,7 @@ function handleEscape() {
               >
                 <div class="flex h-16 shrink-0 items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="20 20 120 120" class="size-12">
-                    <title>Project Manager</title>
+                    <title>{{ page.props.app_name }}</title>
                     <defs>
                         <linearGradient id="logoGradientMobile" x1="0" y1="0" x2="140" y2="140" gradientUnits="userSpaceOnUse">
                             <stop stop-color="#2563EB"></stop>
@@ -304,6 +304,7 @@ function handleEscape() {
                     <rect x="80" y="65" width="14" height="40" rx="4" fill="white" opacity="0.95"></rect>
                     <path d="M100 85 L115 100 L135 70" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
                   </svg>
+                  <span class="font-bold text-xl tracking-tight pl-2">{{ page.props.app_name }}</span>
                 </div>
                 <nav class="flex flex-1 flex-col">
                   <ul role="list" class="flex flex-1 flex-col gap-y-7">
@@ -503,7 +504,7 @@ function handleEscape() {
         >
           <div class="flex h-16 shrink-0 items-center">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="20 20 120 120" class="size-12">
-              <title>Project Manager</title>
+              <title>{{ page.props.app_name }}</title>
               <defs>
                   <linearGradient id="logoGradient" x1="0" y1="0" x2="140" y2="140" gradientUnits="userSpaceOnUse">
                       <stop stop-color="#2563EB"></stop>
@@ -516,6 +517,7 @@ function handleEscape() {
               <rect x="80" y="65" width="14" height="40" rx="4" fill="white" opacity="0.95"></rect>
               <path d="M100 85 L115 100 L135 70" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
+            <span class="font-bold text-xl tracking-tight pl-2">{{ page.props.app_name }}</span>
           </div>
           <nav class="flex flex-1 flex-col">
             <ul role="list" class="flex flex-1 flex-col gap-y-7">

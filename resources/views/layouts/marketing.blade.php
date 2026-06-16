@@ -7,7 +7,7 @@
     <link rel="icon" href="/favicon.ico" sizes="48x48">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <title>{{ config('app.name') }} | Terms & Privacy</title>
+    @yield('title')
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -43,12 +43,16 @@
                 <span class="font-bold text-xl tracking-tight">{{ config('app.name') }}</span>
             </div>
             <div class="flex items-center gap-4">
-                <a href="{{ route('login') }}" class="hidden md:block text-sm font-medium hover:text-appPurple">Log
-                    in</a>
-                <a href="{{ route('register-organization') }}"
-                    class="bg-appPurple hover:bg-opacity-90 text-white text-sm font-semibold px-5 py-2.5 rounded-full shadow-lg shadow-appPurple/30 transition-all transform hover:-translate-y-0.5">
-                    Get Started Free
-                </a>
+                @if (Auth::check())
+                    <a href="{{ route('dashboard-grid') }}" class="bg-appPurple hover:bg-opacity-90 text-white text-sm font-semibold px-5 py-2.5 rounded-full shadow-lg shadow-appPurple/30 transition-all transform hover:-translate-y-0.5">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="text-sm font-medium hover:text-appPurple">Log
+                        in</a>
+                    <a href="{{ route('register-organization') }}"
+                        class="bg-appPurple hover:bg-opacity-90 text-white text-sm font-semibold px-2.5 sm:px-5 py-2.5 rounded-full shadow-lg shadow-appPurple/30 transition-all transform hover:-translate-y-0.5">
+                        Get Started <span class="hidden sm:inline">for Free</span>
+                    </a>
+                @endif
             </div>
         </div>
     </nav>

@@ -31,7 +31,7 @@ function onNewInvite() {
 </script>
 
 <template>
-  <Head title="Project Manager" />
+  <Head :title="page.props.app_name + ' | Your Organization'" />
   <AppLayout :page-route="route().current()">
     <div class="sm:flex sm:items-center pt-10 px-4 sm:px-6 lg:px-8">
       <div class="sm:flex-auto">
