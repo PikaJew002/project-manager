@@ -23,7 +23,7 @@ function resendVerificationEmail() {
 </script>
 
 <template>
-  <Head title="Login" />
+  <Head :title="page.props.app_name + ' | Verify Your Email'" />
   <AuthLayout>
     <div class="flex flex-col gap-6">
       <div v-if="page.props.message" class="grid gap-6">

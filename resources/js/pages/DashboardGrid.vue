@@ -74,7 +74,7 @@ function onChangeTask(taskId) {
 </script>
 
 <template>
-  <Head title="Project Manager" />
+  <Head :title="page.props.app_name + ' | Your Tasks'" />
   <TasksLayout
     :pageRoute="route().current()"
     otherVersionPageRouteName="dashboard-board"

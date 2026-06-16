@@ -1,5 +1,9 @@
 @extends('layouts.marketing')
 
+@section('title')
+    <title>{{ config('app.name') }} | Terms & Privacy</title>
+@endsection
+
 @section('content')
     <!-- Legal Content -->
     <main class="relative pt-32 pb-24 lg:pt-40 px-6">
@@ -9,7 +13,7 @@
 
         <article class="relative z-10 max-w-3xl mx-auto">
             <header class="mb-12 pb-8 border-b border-gray-200">
-                <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-3">Legal Information</h1>
+                <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-3">{{ config('app.name') }} Terms & Privacy</h1>
                 <p class="text-sm text-textMuted">Last Updated: Monday, June 15, 2026</p>
             </header>
 
@@ -70,7 +74,7 @@
                     <div>
                         <h3 class="text-lg font-semibold mb-3">5. Intellectual Property</h3>
                         <p class="text-textMuted leading-relaxed">
-                            All content, features, and functionality of the Service are owned by Project Manager and are
+                            All content, features, and functionality of the Service are owned by {{ config('app.name') }} and are
                             protected by
                             copyright and intellectual property laws. You retain all rights to the data and content you
                             upload to the Service ("User Content").

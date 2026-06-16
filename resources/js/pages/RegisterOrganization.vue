@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import AuthLayout from '../layouts/AuthLayout.vue';
+
+let page = usePage();
 
 let form = useForm({
   first_name: '',
@@ -24,7 +26,7 @@ function submit() {
 </script>
 
 <template>
-  <Head title="Register" />
+  <Head :title="page.props.app_name + ' | Register'" />
   <AuthLayout>
     <div v-if="selectedRegistrationType === null" class="grid grid-cols-1 gap-4">
       <div class="group relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:border-gray-400">
@@ -32,7 +34,7 @@ function submit() {
           <button @click.prevent="selectedRegistrationType = 'new-organization'" type="button" class="focus:outline-none">
             <span class="absolute inset-0" aria-hidden="true" />
             <p class="text-sm font-medium text-gray-900">New Organization</p>
-            <p class="text-sm text-gray-500">Are you looking to create a new Organization in Project Manager?</p>
+            <p class="text-sm text-gray-500">Are you looking to create a new Organization in {{ page.props.app_name }}?</p>
           </button>
         </div>
         <span class="pointer-events-none absolute right-4 top-4 text-gray-300 group-hover:text-gray-400 group-focus-within:text-gray-400" aria-hidden="true">
@@ -46,7 +48,7 @@ function submit() {
           <button @click.prevent="selectedRegistrationType = 'new-user'" type="button" class="focus:outline-none">
             <span class="absolute inset-0" aria-hidden="true" />
             <p class="text-sm font-medium text-gray-900">New User</p>
-            <p class="text-sm text-gray-500">Are you looking to register as a new User with an existing Organization in Project Manager?</p>
+            <p class="text-sm text-gray-500">Are you looking to register as a new User with an existing Organization in {{ page.props.app_name }}?</p>
           </button>
         </div>
         <span class="pointer-events-none absolute right-4 top-4 text-gray-300 group-hover:text-gray-400 group-focus-within:text-gray-400" aria-hidden="true">

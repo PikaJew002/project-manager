@@ -1,5 +1,9 @@
 @extends('layouts.marketing')
 
+@section('title')
+    <title>{{ config('app.name') }} | Project management, beautifully simplified</title>
+@endsection
+
 @section('content')
     <!-- Hero Section -->
     <section class="relative pt-40 pb-20 lg:pt-48 lg:pb-32 overflow-hidden flex flex-col items-center text-center px-6">
@@ -22,7 +26,7 @@
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-20">
                 <a href="{{ route('register-organization') }}"
                     class="w-full sm:w-auto bg-appPurple text-white text-lg font-semibold px-8 py-4 rounded-full shadow-xl shadow-appPurple/30 hover:shadow-2xl hover:shadow-appPurple/40 transition-all transform hover:-translate-y-1">
-                    Try Project Manager Today
+                    Try {{ config('app.name') }} Today
                 </a>
                 {{-- <a href="#features"
                     class="w-full sm:w-auto text-textDark bg-white border border-gray-200 hover:bg-gray-50 text-lg font-semibold px-8 py-4 rounded-full shadow-sm transition-all flex items-center justify-center gap-2">

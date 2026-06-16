@@ -80,7 +80,7 @@ function onEditParentTask(taskId) {
 </script>
 
 <template>
-  <Head title="Project Manager" />
+  <Head :title="page.props.app_name + ' | ' + project.name" />
   <TasksLayout
     :pageRoute="route().current()"
     :paramId="route().params.id"

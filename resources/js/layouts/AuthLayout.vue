@@ -21,7 +21,7 @@ let page = usePage();
           >
             <div class="flex size-40 items-center justify-center rounded-md">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="20 20 120 120">
-                <title>Project Manager</title>
+                <title>{{ page.props.app_name }}</title>
                 <defs>
                     <linearGradient id="logoGradient" x1="0" y1="0" x2="140" y2="140" gradientUnits="userSpaceOnUse">
                         <stop stop-color="#2563EB"></stop>
@@ -38,11 +38,7 @@ let page = usePage();
             <span class="sr-only">Logo</span>
           </a>
           <div class="space-y-2 text-center">
-            <h1 class="text-xl font-medium">Project Manager</h1>
-            <p class="text-center text-sm text-muted-foreground">
-              Yet another project management solution no one asked for and some
-              developer thinks he can do better
-            </p>
+            <h1 class="text-xl font-medium">{{ page.props.app_name }}</h1>
           </div>
         </div>
         <Banner :show="page.props.status !== undefined && showStatus" @close="showStatus = false">

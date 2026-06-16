@@ -22,7 +22,7 @@ function submit() {
 </script>
 
 <template>
-  <Head title="Notification settings" />
+  <Head :title="page.props.app_name + ' | Notification settings'" />
   <SettingsLayout :pageRoute="route().current()">
     <form @submit.prevent="submit" class="divide-y divide-gray-200 bg-white/75 backdrop-blur-sm">
       <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">

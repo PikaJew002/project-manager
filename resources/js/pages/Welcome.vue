@@ -18,7 +18,7 @@ function submit() {
 </script>
 
 <template>
-  <Head title="Login" />
+  <Head :title="page.props.app_name + ' | Login'" />
   <AuthLayout>
     <form @submit.prevent="submit" class="flex flex-col gap-6">
       <div v-if="page.props.message" class="grid gap-6">

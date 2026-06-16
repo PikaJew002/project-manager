@@ -2,6 +2,8 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "build:marketing": "vite build --config vite-marketing.config.js",
+        "preview:marketing": "vite preview --config vite-marketing.config.js",
         "build": "vite build && vite build --config vite-marketing.config.js",
         "dev": "vite",
         "dev:marketing": "vite --config vite-marketing.config.js"
