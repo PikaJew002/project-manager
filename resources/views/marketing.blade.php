@@ -83,7 +83,7 @@
         <!-- Hero Image Mockup -->
         <div class="relative w-full max-w-6xl mx-auto z-20 animate-float">
             <img
-                src="{{ asset('images/screenshot-2026-06-14-2-02.png') }}"
+                src="{{ asset('images/screenshot-2026-06-14-2-02-jpeg.jpg') }}"
                 alt="App Dashboard showing a kanban board with a fluid gradient background"
                 class="w-full rounded-2xl shadow-2xl border border-white/40 ring-1 ring-black/5"
             >
@@ -106,7 +106,7 @@
                     </p>
                 </div>
                 <div class="lg:w-1/2 w-full relative">
-                    <img src="{{ asset('images/screenshot-2026-06-14-2-02.png') }}" alt="Cross-project dashboard" class="w-full rounded-2xl shadow-xl border border-gray-200">
+                    <img src="{{ asset('images/screenshot-2026-06-14-2-02-jpeg.jpg') }}" alt="Cross-project dashboard" class="w-full rounded-2xl shadow-xl border border-gray-200">
                 </div>
             </div>
 
@@ -123,8 +123,8 @@
                 </div>
                 <!-- Staggered Image Component -->
                 <div class="lg:w-1/2 w-full relative h-[300px] sm:h-[400px] lg:h-[500px]">
-                    <img src="{{ asset('images/screenshot-2026-06-14-2-02.png') }}" alt="Kanban Board View" class="absolute top-0 left-0 w-4/5 rounded-2xl shadow-2xl border border-gray-200 z-10 hover:z-30 transition-z duration-300">
-                    <img src="{{ asset('images/screenshot-2026-06-14-2-01.png') }}" alt="Grid View" class="absolute bottom-0 right-0 w-4/5 rounded-2xl shadow-2xl border border-gray-200 z-20 hover:z-30 transition-z duration-300 translate-y-8 sm:translate-y-0">
+                    <img src="{{ asset('images/screenshot-2026-06-14-2-02-jpeg.jpg') }}" alt="Kanban Board View" class="absolute top-0 left-0 w-4/5 rounded-2xl shadow-2xl border border-gray-200 z-10 hover:z-30 transition-z duration-300">
+                    <img src="{{ asset('images/screenshot-2026-06-14-2-01-jpeg.jpg') }}" alt="Grid View" class="absolute bottom-0 right-0 w-4/5 rounded-2xl shadow-2xl border border-gray-200 z-20 hover:z-30 transition-z duration-300 translate-y-8 sm:translate-y-0">
                 </div>
             </div>
 
@@ -140,7 +140,7 @@
                     </p>
                 </div>
                 <div class="lg:w-1/2 w-full">
-                    <img src="{{ asset('images/screenshot-2026-06-14-2-00.png') }}" alt="Private Projects Interface" class="w-full rounded-2xl shadow-xl border border-gray-200">
+                    <img src="{{ asset('images/screenshot-2026-06-14-2-00-jpeg.jpg') }}" alt="Private Projects Interface" class="w-full rounded-2xl shadow-xl border border-gray-200">
                 </div>
             </div>
 
@@ -156,7 +156,7 @@
                     </p>
                 </div>
                 <div class="lg:w-1/2 w-full">
-                    <img src="{{ asset('images/screenshot-2026-06-14-2-03.png') }}" alt="Organization and Invites" class="w-full rounded-2xl shadow-xl border border-gray-200">
+                    <img src="{{ asset('images/screenshot-2026-06-14-2-03-jpeg.jpg') }}" alt="Organization and Invites" class="w-full rounded-2xl shadow-xl border border-gray-200">
                 </div>
             </div>
 
