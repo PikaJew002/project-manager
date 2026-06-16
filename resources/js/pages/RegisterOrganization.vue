@@ -258,7 +258,7 @@ function submit() {
     </form>
     <div class="text-center text-sm text-muted-foreground">
       Already have an account?
-      <Link :href="route('welcome')" class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500">
+      <Link :href="route('login')" class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500">
         Log in
       </Link>
     </div>
