@@ -85,7 +85,7 @@ function submit() {
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-indigo-600 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
               required
               v-model="form.organization_name"
-              placeholder="KCTCS Marketing"
+              placeholder="Organization Name"
             />
             <div v-show="form.errors.organization_name">
               <p class="text-sm text-red-600 dark:text-red-500">
