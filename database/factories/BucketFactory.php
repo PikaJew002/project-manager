@@ -16,8 +16,18 @@ class BucketFactory extends Factory
      */
     public function definition(): array
     {
+        $bucketNames = [
+            'Design Tasks',
+            'Development Tasks',
+            'QA Tasks',
+            'Documentation Tasks',
+            'Support Tasks',
+        ];
+
+        $bucketName = $bucketNames[array_rand($bucketNames)];
+
         return [
-            'name' => fake()->sentence(2),
+            'name' => $bucketName,
         ];
     }
 }

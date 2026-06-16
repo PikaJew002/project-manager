@@ -18,14 +18,14 @@ class DatabaseSeeder extends Seeder
     {
         // for all tests
         $org = Organization::factory()->create([
-            'name' => 'KCTCS Marketing',
+            'name' => 'Professional Services Team',
         ]);
         // for most tests
         $admin = User::factory()->for($org)->create([
-            'first_name' => 'Test',
-            'last_name' => 'User',
-            'initials' => 'TU',
-            'email' => 'test@example.com',
+            'first_name' => 'Michael',
+            'last_name' => 'McDonald',
+            'initials' => 'MM',
+            'email' => 'michael@organization.com',
             'is_admin' => true,
             'timezone' => 'America/New_York',
         ]);

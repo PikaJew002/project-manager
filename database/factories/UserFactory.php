@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Lottery;
 use Illuminate\Support\Str;
 
 /**
@@ -23,8 +24,24 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        $fn = fake()->firstName();
-        $ln = fake()->lastName();
+        $firstNames = [
+            'Michael',
+            'John',
+            'Jane',
+            'Jim',
+            'Jill',
+            'Jack',
+        ];
+        $lastNames = [
+            'McDonald',
+            'Smith',
+            'Johnson',
+            'Williams',
+            'Brown',
+            'Jones',
+        ];
+        $fn = $firstNames[array_rand($firstNames)];
+        $ln = $lastNames[array_rand($lastNames)];
 
         return [
             'first_name' => $fn,

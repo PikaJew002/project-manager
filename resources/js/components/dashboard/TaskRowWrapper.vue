@@ -15,6 +15,18 @@ let props = defineProps({
 });
 
 let emit = defineEmits(['editTask', 'updateTaskStatus']);
+
+function depthBarClass(status) {
+  if (status === 'Completed') {
+    return 'bg-indigo-600/75';
+  }
+
+  if (status === 'In Progress') {
+    return 'depth-bar-in-progress';
+  }
+
+  return 'bg-gray-200/75';
+}
 </script>
 
 <template>
@@ -26,7 +38,7 @@ let emit = defineEmits(['editTask', 'updateTaskStatus']);
       <template #col-1="{ task }">
         <td class="border-b border-gray-200 whitespace-nowrap bg-white text-sm text-gray-900 w-16">
           <div class="flex flex-row items-center justify-start select-none">
-            <div v-for="level in depth" :key="level" :class="['w-4 h-[65px] mr-1 rounded-sm', task.status !== 'Completed' ? 'bg-gray-200/75' : 'bg-indigo-600/75']"></div>
+            <div v-for="level in depth" :key="level" :class="['w-4 h-[65px] mr-1 rounded-sm', depthBarClass(task.status)]"></div>
             <div class="ml-4 mr-2">
               <TaskStatus
                 classes="flex flex-row flex-nowrap grow-0 shrink-0 basis-[18px] justify-start items-center font-normal"
@@ -61,3 +73,15 @@ let emit = defineEmits(['editTask', 'updateTaskStatus']);
     />
   </template>
 </template>
+
+<style scoped>
+.depth-bar-in-progress {
+  background: repeating-linear-gradient(
+    45deg,
+    rgb(209 213 219 / 0.75),
+    rgb(209 213 219 / 0.75) 4px,
+    rgb(129 140 248 / 0.75) 4px,
+    rgb(129 140 248 / 0.75) 8px
+  );
+}
+</style>

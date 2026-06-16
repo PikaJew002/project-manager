@@ -16,8 +16,15 @@ class TaskFactory extends Factory
      */
     public function definition(): array
     {
+        $taskNames = [
+            'Review the design document',
+            'Create the technical specifications',
+            'Meet with the client to discuss the design mockups',
+            'Develop the user interface',
+        ];
+
         return [
-            'name' => fake()->sentence(4),
+            'name' => $taskNames[array_rand($taskNames)],
         ];
     }
 }
