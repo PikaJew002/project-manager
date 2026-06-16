@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
 import Banner from '../components/dashboard/Banner.vue';
 
 let showStatus = ref(true);
@@ -15,7 +15,7 @@ let page = usePage();
     <div class="w-full max-w-sm">
       <div class="flex flex-col gap-8">
         <div class="flex flex-col gap-y-6 items-center">
-          <Link
+          <a
             :href="route('marketing')"
             class="flex flex-col items-center gap-2 font-medium focus-visible:outline-none focus-visible:ring-indigo-600 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
@@ -36,7 +36,7 @@ let page = usePage();
               </svg>
             </div>
             <span class="sr-only">Logo</span>
-          </Link>
+          </a>
           <div class="space-y-2 text-center">
             <h1 class="text-xl font-medium">Project Manager</h1>
             <p class="text-center text-sm text-muted-foreground">
