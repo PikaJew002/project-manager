@@ -16,7 +16,7 @@ let page = usePage();
       <div class="flex flex-col gap-8">
         <div class="flex flex-col gap-y-6 items-center">
           <Link
-            :href="route('welcome')"
+            :href="route('login')"
             class="flex flex-col items-center gap-2 font-medium focus-visible:outline-none focus-visible:ring-indigo-600 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <div class="flex size-40 items-center justify-center rounded-md">
