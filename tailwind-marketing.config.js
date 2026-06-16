@@ -1,13 +1,16 @@
+import defaultTheme from 'tailwindcss/defaultTheme';
+
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
+        './resources/views/layouts/marketing.blade.php',
         './resources/views/marketing.blade.php',
         './resources/views/privacy.blade.php',
     ],
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter', 'sans-serif'],
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
             },
             colors: {
                 appPurple: '#5E52F6',
