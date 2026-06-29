@@ -702,7 +702,7 @@ function handleEscape() {
         </div>
       </div>
       <main class="w-full float-none overflow-hidden relative">
-        <div class="flex flex-col flex-nowrap grow shrink basis-0 overflow-y-auto h-full min-h-0 min-w-0 relative z-0 bg-cover bg-[linear-gradient(rgb(255,255,255)_0%,rgba(255,255,255,0.2)_50%),url(https://cdn.hubblecontent.osi.office.net/getty/publish/gettyimages/849074186_t10_template_13.jpg)]">
+        <div class="flex flex-col flex-nowrap grow shrink basis-0 overflow-y-auto h-full min-h-0 min-w-0 relative z-0 bg-cover bg-[linear-gradient(rgb(255,255,255)_0%,rgba(255,255,255,0.2)_50%),url(/images/849074186_t10_template_13.jpg)]">
           <div class="flex grow shrink basis-0 flex-col flex-nowrap min-w-0 min-h-0">
             <Banner :show="page.props.status !== undefined && showStatus" @close="showStatus = false">
               {{ page.props.status }}

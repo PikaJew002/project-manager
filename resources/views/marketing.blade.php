@@ -15,9 +15,7 @@
         <div class="relative z-10 max-w-4xl mx-auto">
             <h1 class="text-5xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-6">
                 Project management, <br />
-                <span
-                    class="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 via-appPurple to-purple-600">beautifully
-                    simplified.</span>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 via-appPurple to-purple-600">beautifully simplified.</span>
             </h1>
             <p class="text-lg lg:text-xl text-textMuted max-w-2xl mx-auto mb-10 leading-relaxed">
                 A workspace designed to balance personal focus with team collaboration. All wrapped in an interface you’ll
@@ -145,8 +143,7 @@
         <div class="relative z-10 max-w-4xl mx-auto px-6 text-center text-white">
             <h2 class="text-4xl lg:text-6xl font-bold mb-6 tracking-tight">Ready to clear your mind?</h2>
             <p class="text-xl lg:text-2xl mb-12 text-white/90 max-w-2xl mx-auto">
-                Join thousands of users organizing their work in a tool they actually enjoy using. Start setting up your
-                space in minutes.
+                Join at least 1 user organizing their work in a tool they actually enjoy using. Start setting up your space in minutes.
             </p>
             <a href="{{ route('register-organization') }}"
                 class="bg-white text-appPurple text-xl font-bold px-10 py-5 rounded-full shadow-2xl hover:bg-gray-50 hover:scale-105 transition-all transform duration-300">

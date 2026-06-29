@@ -92,7 +92,7 @@ function onClickAddTask() {
         </div>
       </div>
       <!-- header add task button -->
-      <div v-if="showAddTask" class="flex flex-row flex-nowrap mb-4">
+      <div v-if="showAddTask" class="hidden md:flex flex-row flex-nowrap mb-4">
         <button @click="onClickAddTask" class="flex flex-row flex-nowrap grow-0 shrink-0 basis-[280px] items-center justify-between space-x-3 rounded-lg border border-gray-300 p-2 text-left shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 h-10 mt-1 py-0 px-3">
           <span class="flex grow-0 shrink-0 basis-auto py-0 px-2">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">

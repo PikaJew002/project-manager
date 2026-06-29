@@ -4,14 +4,12 @@ use App\Http\Middleware\HandleInertiaRequests;
 use App\Models\User;
 use App\Notifications\TasksDue;
 use App\Notifications\TasksStale;
-use App\Mail\ShabbatZoomLink;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Sentry\Laravel\Integration;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -116,10 +114,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 $user->notify(new TasksStale($user->tasks, 30));
             }
         })->hourly();
-
-        $schedule->call(function () {
-            Mail::mailer('smtp')->send(new ShabbatZoomLink());
-        })->weeklyOn(4, '17:00')->timezone('America/New_York'); // Thursday at 5:00 PM EST
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->respond(function (Response $response, Throwable $exception, Request $request) {

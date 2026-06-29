@@ -6,7 +6,6 @@ use App\Enums\TaskPriority;
 use App\Enums\TaskProgress;
 use App\Notifications\TaskAssigned;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -284,5 +283,30 @@ class Task extends Model
         });
 
         return $this->delete();
+    }
+
+    public function toEmail(User $user): array
+    {
+        $timezone = $user->timezone ?? config('app.timezone');
+        $assignedBy = User::firstWhere('id', $this->users->first(fn(User $user) => $user->id === $user->id)?->pivot?->assigned_by);
+        $projectBadges = $this->projects()
+            ->yourProjects($user)
+            ->pluck('name');
+
+        $bucketBadges = $this->buckets()
+            ->yourBuckets($user)
+            ->with('project')
+            ->get()
+            ->map(fn(Bucket $bucket) => $bucket->project->name . ' · ' . $bucket->name);
+
+        return [
+            'name' => $this->name,
+            'priority' => $this->priority,
+            'due_at' => $this->due_at?->tz($timezone)?->format("M j, Y \\a\\t g:i A"),
+            'created_by' => $this->createdBy->first_name . ' ' . $this->createdBy->last_name,
+            'assigned_to' => $this->users->map(fn(User $user) => "{$user->first_name} {$user->last_name}")->implode(', '),
+            'assigned_by' => $assignedBy?->first_name . ' ' . $assignedBy?->last_name,
+            'badges' => $projectBadges->concat($bucketBadges)->values(),
+        ];
     }
 }

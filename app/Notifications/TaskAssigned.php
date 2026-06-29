@@ -2,11 +2,11 @@
 
 namespace App\Notifications;
 
+use App\Mail\TasksNotification;
 use App\Models\Task;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Mail\Mailable;
 use Illuminate\Notifications\Notification;
 
 class TaskAssigned extends Notification implements ShouldQueue
@@ -35,22 +35,17 @@ class TaskAssigned extends Notification implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail(object $notifiable): MailMessage
+    public function toMail(object $notifiable): Mailable
     {
-        $assignedBy = User::find($this->task->users->first(function (User $user) use ($notifiable) {
-            return $user->id === $notifiable->id;
-        })?->pivot?->assigned_by);
+        $emailTasks = collect([$this->task->toEmail($notifiable)]);
 
-        return (new MailMessage)
-                ->subject("Task Assigned: {$this->task->name}")
-                ->line("You have been assigned to the task {$this->task->name} by {$assignedBy?->first_name} {$assignedBy?->last_name}")
-                ->line("The task {$this->task->name} is due on {$this->task->due_at?->tz($notifiable->timezone ?? config('app.timezone'))?->format("M j, Y \\a\\t g:i A")}")
-                ->when($this->task->description, function (MailMessage $message) {
-                    $message->line("Description:")->line($this->task->description);
-                })
-                ->action('View Your Tasks Board', route('dashboard-board'))
-                ->action('View Your Tasks Grid', route('dashboard-grid'))
-                ->line("Thank you for using " . config('app.name') . "!");
+        return (new TasksNotification(
+            tasks: $emailTasks,
+            subjectText: 'Task Assigned: ' . $this->task->name,
+            introText: 'You have been assigned to this task.',
+            ctaText: 'View Your Tasks Grid',
+            ctaUrl: route('dashboard-grid'),
+        ))->to($notifiable->email, $notifiable->first_name . ' ' . $notifiable->last_name);
     }
 
     /**
